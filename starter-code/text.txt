@@ -1,0 +1,227 @@
+
+
+  Pick player 1's mark
+  Remember: X goes first
+
+  New Game (vs CPU)
+  New Game (vs player)
+
+  <!-- New game menu end -->
+
+  <!-- Game board start -->
+
+  <!-- x/o icon --> turn
+
+  X (You) <!-- Your sco re -->
+  Ties <!-- Ties score -->
+  X (CPU) <!-- CPU score -->
+
+  Oh no, you lost
+  You won!
+  Player <!-- 1/2 --> wins!
+
+  <!-- x/o icon --> takes the round
+  Round tied
+  Restart game?
+
+  Quit
+  Next round
+  No, cancel
+  Yes, restart
+
+  <!-- Game board end -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ var empty = 0, you = 1, ai = -1
+  function runGame() {
+    var field = []
+    var table = document.getElementById("t")
+    for (var y = 0; y < 3; y++) {
+      var tr = document.createElement("tr")
+      table.appendChild(tr)
+      var row = []
+      field.push(row)
+      for (var x = 0; x < 3; x++) {
+        var td = document.createElement("td")
+        td.classList.add("cell")
+        td.onclick = playerMove(field, x, y)
+        tr.appendChild(td)
+        row.push({value: empty, element: td})
+      }
+    }
+  }
+  function playerMove(field, x, y) {
+    return function() {
+      if (!move(field, x, y, you)) return
+      wins(field, you) ? gameOver('You won!') : aiMove(field)
+    }
+  }
+  function move(field, x, y, who) {
+    var e = field[y][x]
+    if (e.value != empty) return false
+    e.value = who
+    e.element.innerHTML = who == you ? 'X' : 'O'
+    return true
+  }
+  function gameOver(msg) {
+    setTimeout(function() {
+      alert(msg)
+      window.location.reload()
+    }, 100)
+  }
+  function wins(f, player) {
+    function lineWins(x, y, dx, dy) {
+      var a = f[y][x].value, b = f[y+dy][x+dx].value, c = f[y+2*dy][x+2*dx].value
+      return a == b && b == c && a == player
+    }
+    for (var i = 0; i < 3; i++) {
+      if (lineWins(0, i, 1, 0) || lineWins(i, 0, 0, 1)) return true
+    }
+    return lineWins(0, 0, 1, 1) || lineWins(2, 0, -1, 1)
+  }
+  function validMoves(field) {
+    var moves = []
+    for (var y = 0; y < 3; y++) {
+      for (var x = 0; x < 3; x++) {
+        field[y][x].value == empty && moves.push({x:x, y:y})
+      }
+    }
+    return moves;
+  }
+  function findRandomMove(field) {
+    var moves = validMoves(field)
+    if (moves.length == 0) return null
+    return moves[Math.floor(Math.random()*moves.length)]
+  }
+  function findBestMove(field, player) {
+    if (wins(field, player)) return {score: player}
+    if (wins(field, -player)) return {score: -player}
+    var moves = validMoves(field)
+    if (moves.length == 0) return {score:0}
+    var res = []
+    for (var i = 0; i < moves.length; i++) {
+      var m = moves[i]
+      var e = field[m.y][m.x]
+      e.value = player
+      var r = findBestMove(field, -player)
+      r.move = m
+      res.push(r)
+      e.value = empty
+    }
+    res.sort(function(a, b) { return (b.score-a.score)*player })
+    return res[0]
+  }
+  function aiMove(field) {
+
+    var m = findBestMove(field, ai).move
+    if (!m) {
+      gameOver("Draw!")
+      return
+    }
+    move(field, m.x, m.y, ai)
+    wins(field, ai) && gameOver("Computer won!")
+  }
+  runGame()
+
+
+
+
+
+  *************************************
+  function playerVsCpu(){
+    Board = [
+        [' ',' ',' '],
+        [' ',' ',' '],
+        [' ',' ',' ']
+    ]
+
+    for (let r = 0; r < 3; r++ ){
+        for (let c = 0; c < 3; c++){
+            let tile = document.getElementsByClassName("cell")[i];
+            i++;
+            tile.addEventListener("click",setTile)
+            
+                            
+        }
+    }
+    
+
+
+
+    function setTile(){
+        if(gameOver){
+            return;
+        }        
+        let coords = this.id.split("-")
+        let r = parseInt(coords[0]);
+        let c = parseInt(coords[1]);
+
+        if(Board[r][c] != " "){
+            return; 
+        }
+        
+
+        Board[r][c] = currPlayer;
+        if(this.innerText = playerX){
+            computerMove()
+        } 
+        else if(this.innerText = playerO){ 
+            playerMove() }  
+        else{
+            computerMove()
+        }
+
+        
+        checkWinner();
+
+        
+        // // PLAYER'S TURN    
+        // turn.innerHTML = currPlayer + " TURN";
+        // //  END OF PLAYERS TURN
+
+    }
+
+    // Function for the player's move
+    function playerMove(cell) {
+        cell.innerHTML = playerX; 
+    }
+  
+  // Function for the computer's move
+  function computerMove() {
+    // Get all the empty cells
+    // const cell = document.getElementsByClassName('cell');
+    const emptyCells = document.querySelectorAll('.cell:not(.occupied)');
+    // Pick a random empty cell
+    
+    // cell.classList.add('occupied');
+    const randomCell = emptyCells[Math.floor(Math.random() * emptyCells.length)];
+    // Set the computer's mark on the cell
+    randomCell.innerHTML = playerO; //  depending on the computer's mark
+  }
+  
+}

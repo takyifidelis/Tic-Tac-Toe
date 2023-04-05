@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  
+
+  <link rel="icon" type="image/png" sizes="32x32" href="./assets/favicon-32x32.png">
+  
+  <title>Frontend Mentor | Tic Tac Toe</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;700;900&family=Red+Hat+Display:wght@400;500;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+
+ 
+</head>
+<body>
+
+  <!-- New game menu start -->
+  <div id="homePage"> 
+    <div class="first-div"><img src="./assets/logo.svg" alt="logo"></div>
+    <div class="second-div">
+      <div class="second-"> 
+        <div class="pickPlayer"><p class="pick-player">PICK PLAYER 1'S MARK</p></div></div>
+        <div class="player-xo">
+          <div class="first-x"><img src="./assets/xplay.svg" alt="Xplayer" class="xtimes"></div>
+          <div class="first-o"><img src="./assets/oplay.svg" alt="Oplayer" class="oval"></div>
+        </div>
+        <div><p class="rememberX">REMEMBER : X GOES FIRST</p></div>
+    </div>
+
+    <div class="third-div">
+      
+      <div class="vs-cpu" onclick="showBoardCpu()"><span class="new-game">NEW GAME (VS CPU)</span> </div>
+      <div class="vs-player" onclick="showBoard()"><span class="new-game">NEW GAME (VS PLAYER)</span> </div>
+    </div>
+  </div>
+
+   <!-- CREATING THE BOARD FOR THE GAME -->
+
+  <table id="table">
+    <tr>
+      <td class="first-row1" id="11"><img src="./assets/logo.svg" alt="logo"></td>
+      <td class="first-row2" id="12"></td>
+      <td class="firsttt" id="13"><div class="first-row3" onclick="resetBoard()"><img class ="redo" src="assets/redo.svg" alt=""></div> </td>
+    </tr>
+    <tr>
+      <td class="cell" id="0-0"></td>
+      <td class="cell" id="0-1"></td>
+      <td class="cell" id="0-2"></td>
+    </tr>
+    <tr>
+      <td class="cell" id="1-0"></td>
+      <td class="cell" id="1-1"></td>
+      <td class="cell" id="1-2"></td>
+    </tr>
+    <tr>
+      <td class="cell" id="2-0"></td>
+      <td class="cell" id="2-1"></td>
+      <td class="cell" id="2-2"></td>
+    </tr>
+    <tr>
+      <td class="cell2 cgreen" id="21"> <div class="score-x score-write">X (P1)</div><div class="score-x-num numbers">0</div></td>
+      <td class="cell2 cgrey" id="22"><div class="score-tie score-write">TIES</div><div class="score-tie-num numbers">0</div></td>
+      <td class="cell2 corange" id="23"><div class="score-0 score-write">O (P2)</div><div class="score-o-num numbers">0</div></td>
+    </tr>
+  </table>
+
+  <div class="rectangle">
+    <div class="group-26">
+      <p class="winner"></p>
+      <div class="takes"></div>
+      <div class="group-25">
+        <div classs="quit">QUIT</div>
+        <div class="next-round">NEXT ROUND</div>
+      </div>
+    </div>
+
+  </div>
+
+
+
+
+  <script src="index.js"> </script> 
+</body>
+</html>
