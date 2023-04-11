@@ -15,7 +15,7 @@
 
  
 </head>
-<body>
+<body id="body">
 
   <!-- New game menu start -->
   <div id="homePage"> 
@@ -43,7 +43,7 @@
     <tr>
       <td class="first-row1" id="11"><img src="./assets/logo.svg" alt="logo"></td>
       <td class="first-row2" id="12"></td>
-      <td class="firsttt" id="13"><div class="first-row3" onclick="resetBoard()"><img class ="redo" src="assets/redo.svg" alt=""></div> </td>
+      <td class="firsttt" id="13"><div class="first-row3" ><img class ="redo" src="assets/redo.svg" alt=""></div> </td>
     </tr>
     <tr>
       <td class="cell" id="0-0"></td>
@@ -67,16 +67,25 @@
     </tr>
   </table>
 
-  <div class="rectangle">
-    <div class="group-26">
-      <p class="winner"></p>
-      <div class="takes"></div>
+  <div class="rectangle">  
+    <div class="group-10">  
+      <p class="winnerP">Player 1 wins</p>
+      <h1 class="takes"><img src='./assets/icon-x.svg' alt="" class="pl-image">  <span class="takee">TAKES THE ROUND</span></h1>
       <div class="group-25">
-        <div classs="quit">QUIT</div>
-        <div class="next-round">NEXT ROUND</div>
+        <button class="quit">QUIT</button>
+        <button class="next-round">NEXT ROUND</button>      
       </div>
-    </div>
+  </div>
+  </div>
 
+  <div class="rectangle1">  
+    <div class="group-11">       
+      <h1 class="restart-gameP">RESTART GAME?</h1>
+      <div class="group-25">
+        <button class="cancel">NO, CANCEL</button>
+        <button class="restart">YES, RESTART</button>      
+      </div>
+  </div>
   </div>
 
 
