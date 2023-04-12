@@ -31,7 +31,7 @@ let winnerP = document.getElementsByClassName("winnerP")[0];
 let takes = document.getElementsByClassName("takes")[0];
 
 let quit = document.getElementsByClassName("quit")[0];
-let nextRounGamed = document.getElementsByClassName("next-round")[0];
+let nextRound = document.getElementsByClassName("next-round")[0];
 
 // DEFINING VARIABLE FOR THE RESTART RECTANGLE
 let cancel = document.getElementsByClassName("cancel")[0];
@@ -52,22 +52,52 @@ let takeP = document.getElementsByClassName("takee")[0];
 
 
 
-
-
+playGame()
+vsPlayer.addEventListener("click", showBoard)
 redo.addEventListener("click",handleReset);
 quit.addEventListener("click", quitGame)
 cancel.addEventListener('click', cancelRestart)
+restart.addEventListener("click",restartGame)
+nextRound.addEventListener("click",nextRoundGame)
 // player vs player Board display
 function showBoard(){
-    homePage.style.display="none"
+    
+    homePage.style.display="none";
+    redoRectangle.style.display = "none";
+    rectangle.style.display ="none";
+
     board.style.display="inline-block";
-    playerVsPlayer()
+    
+    // homePage.style.display ="inline-block";
+    
+    board.style.opacity = "1";
+    startGame()
+    
 }
 // Player vs CPU Board Display
-function showBoardCpu(){
-    homePage.style.display="none"
-    board.style.display="inline-block";
-    playerVsCpu()
+// function showBoardCpu(){
+//     homePage.style.display="none"
+//     board.style.display="inline-block";
+//     renderGame()
+// }
+
+function playGame(){
+    
+    homePage.style.display ="inline-block";
+    
+}
+
+function startGame(){
+    
+    for(let i = 0; i < cells.length; i++){
+        
+        cells[i].innerHTML = "";
+        cells[i].classList.remove("winnerO");
+        cells[i].classList.remove("winnerX");  
+        cells[i].removeEventListener("click", setTile);               
+        
+    }
+    renderGame()
 }
 
 
@@ -75,18 +105,25 @@ function showBoardCpu(){
 
 
 //Starting the Game for Player vs Player
-function playerVsPlayer(){
+
+function renderGame(){  
+    currPlayer = playerX;
     Board = [
         [' ',' ',' '],
         [' ',' ',' '],
         [' ',' ',' ']
     ]
-
+    
+    let i = 0;
     for (let r = 0; r < 3; r++ ){
         for (let c = 0; c < 3; c++){
             let tile = document.getElementsByClassName("cell")[i];
             i++;
-            tile.addEventListener("click",setTile)                    
+            if(tile){
+                tile.addEventListener("click",setTile) 
+
+            }
+                              
         }
     }
     
@@ -94,9 +131,9 @@ function playerVsPlayer(){
 
 
 function setTile(){
-    if(gameOver){
-        return;
-    }
+    // if(gameOver){
+    //     return;
+    // }
     
     let coords = this.id.split("-")
     let r = parseInt(coords[0]);
@@ -130,35 +167,10 @@ function setTile(){
     
     checkWinner();
     hover();
+    checkTie(!gameOver)
     
 }
 
-function hover(){
-      // Loop through cells
-    for (let i = 0; i < cells.length; i++) {
-        cells[i].addEventListener('mouseenter', function() {
-            // Change image on mouseenter         
-            if(this.innerHTML.length === playerO.length){
-                this.innerHTML = playerOwin;             
-
-            } else if (this.innerHTML.length === playerX.length){
-                this.innerHTML = playerXwin;                
-            } else {                
-                    return
-            }
-        });
-        cells[i].addEventListener('mouseleave', function() {
-            // Change image back on mouseleave   
-            if(this.innerHTML.length == playerOwin.length){
-                this.innerHTML = playerO;                
-            } else if (this.innerHTML.length == playerXwin.length){
-                this.innerHTML = playerX;                
-            } else {
-                return;
-            }
-        });
-    }
-}
 
 // CHECKING FOR THE WINNER
 
@@ -179,13 +191,15 @@ function checkWinner(){
                     winEffectX()
                           
             }
+        }
             gameOver = true;
             handleWin()
             return;
             
-        }
+        
         
     }
+}
     
     //Vertically**
     for(let c = 0; c < 3; c++){
@@ -200,6 +214,7 @@ function checkWinner(){
                 }else{
                     tile.classList.add("winnerX")                    
                     tile.innerHTML = playerXX;
+                    winEffectX()
                  }
             
             }
@@ -221,6 +236,7 @@ function checkWinner(){
                 }else{
                     tile.classList.add("winnerX")                    
                     tile.innerHTML = playerXX;
+                    winEffectX()
                  }
       }  
       gameOver = true;
@@ -240,6 +256,7 @@ function checkWinner(){
             }else{
                 tile.classList.add("winnerX")                    
                 tile.innerHTML = playerXX;
+                winEffectX()
             }
 
         // 1-1
@@ -252,6 +269,7 @@ function checkWinner(){
         }else{
             tile.classList.add("winnerX")                    
             tile.innerHTML = playerXX;
+            winEffectX()
         }
 
         // 2-0
@@ -264,6 +282,7 @@ function checkWinner(){
             }else{
                 tile.classList.add("winnerX")                    
                 tile.innerHTML = playerXX;
+                winEffectX()
                 }
 
         gameOver = true;
@@ -272,8 +291,50 @@ function checkWinner(){
         return;
     }
     
+    
 }
+
+
+function hover(){
+    // Loop through cells
+  for (let i = 0; i < cells.length; i++) {
+      cells[i].addEventListener('mouseenter', function() {
+          // Change image on mouseenter         
+          if(this.innerHTML.length === playerO.length){
+              this.innerHTML = playerOwin;             
+
+          } else if (this.innerHTML.length === playerX.length){
+              this.innerHTML = playerXwin;                
+          } else {                
+                  return
+          }
+      });
+      cells[i].addEventListener('mouseleave', function() {
+          // Change image back on mouseleave   
+          if(this.innerHTML.length == playerOwin.length){
+              this.innerHTML = playerO;                
+          } else if (this.innerHTML.length == playerXwin.length){
+              this.innerHTML = playerX;                
+          } else {
+              return;
+          }
+      });
+  }
 }
+function checkTie(){
+    // Get all div elements with class "cell"
+    // Convert the HTMLCollection to an array
+    const cellArray = Array.from(cells);
+    // Check if all cell divs are full
+    const allCellsFull = cellArray.every(cell => cell.childNodes.length > 0);
+    if (allCellsFull) {
+  // All divs with class "cell" are full         
+         handleTie();
+        }
+}
+
+
+
 
 function winEffectO(){
     takes.innerHTML = playerO + "<span class='takee'>TAKES THE ROUND</span> ";
@@ -285,17 +346,9 @@ function winEffectX(){
     takes.style.color ="#31C3BD";
     winnerP.textContent = "Player 1 wins"
 }
-function tieEffect(){
-    takes.innerHTML = "<span class='takee'> ROUND TIED</span> ";
-    takes.style.color ="#A8BFC9";
-    winnerP.textContent = ""
 
-}
-function tie(){
-    
-}
 
-// end of CHECKING FOR THE WINNER
+
 
 
 
@@ -315,9 +368,7 @@ function resetBoard() {
    }
    for(let i = 0; i < cells.length; i++){
     cells[i].addEventListener("click", setTile)
-   }
-
-      
+   }      
 }
 function updateStatus(){
 
@@ -365,22 +416,40 @@ function handleTie(){
 
 }
 function quitGame(){
-   
-    
-
+   console.log("You Quit")
+   board.style.display ="none";
+   rectangle.style.display ="none";
+   homePage.style.display= "inline-block";
+      
 }
+
 function cancelRestart(){
     board.style.position = "inline-block"
     board.style.opacity = "1";    
     redoRectangle.style.display = "none";     
     
 }
+
+//
+function restartGame(){
+    redoRectangle.style.display = "none";
+    board.style.opacity = "1";
+
+   startGame()
+}
+
 function updateScore(player){
     scores[player]++
 
     document.getElementsByClassName("score-o-num")[0].textContent = scores.O;
     document.getElementsByClassName("score-x-num")[0].textContent = scores.X;
-    document.getElementsByClassName("score-tie-num")[0].textContent = scores.T;
+    document.getElementsByClassName("score checkT-num")[0].textContent = scores.T;
 }
-function nextRoundGame(){}
-function newGame(){}
+
+
+function nextRoundGame(){
+    rectangle.style.display ="none";    
+    restartGame()
+}
+
+
