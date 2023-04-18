@@ -402,8 +402,7 @@ function winEffectX(){
 function updateScore(){
     Xscore.innerText = scoreX;
     Oscore.innerText =  scoreO;
-    tieScore.innerText = scoreT;
-    
+    tieScore.innerText = scoreT;    
 }
 
 //HANDLE RESET FUNCTION
@@ -441,7 +440,7 @@ function handleTie(){
     rectangle.style.zIndex = "1"; 
     takes.innerHTML = "<span class='takee'> ROUND TIED</span> ";
     takes.style.color ="#A8BFC9";
-    winnerP.textContent = ""
+    winnerP.textContent = "";
 }
 
 //QUIT GAME FUNCTION
@@ -803,14 +802,10 @@ function checkTie2(){
   // All divs with class "cell" are full         
         handleTie2();      
         tieScore.innerText = scoreT + 1;
-        scoreT++
-        
+        scoreT++       
 
         }
 }
-
-
-
 
 function winEffectO2(){
     takes.innerHTML = playerO + "<span class='takee'>TAKES THE ROUND</span> ";
@@ -820,7 +815,6 @@ function winEffectO2(){
     
     
 }
-
 function winEffectX2(){
     takes.innerHTML = playerX + "<span class='takee'>TAKES THE ROUND</span> ";
     takes.style.color ="#31C3BD";
@@ -835,11 +829,10 @@ function updateScore2(){
     tieScore.innerText = scoreT;
     
 }
-
 //HANDLE RESET FUNCTION
 function handleReset2(){
-    board.style.position = ""
-    board.style.opacity = "0absolute.1";
+    board.style.position = "absolute";
+    board.style.opacity = "0.1";
     redoRectangle.style.position = "absolute";
     redoRectangle.style.display = "inline-block";
     redoRectangle.style.top = "0";
@@ -861,7 +854,7 @@ function handleWin2(){
 }
 //HANDLE TIE FUNCTION
 function handleTie2(){
-    board.style.position = "absolute"
+    board.style.position = "absolute";
     board.style.opacity = "0.1";
     //FOR THE RECTANGLE WIN
     rectangle.style.display = "inline-block"; 
@@ -871,9 +864,8 @@ function handleTie2(){
     rectangle.style.zIndex = "1"; 
     takes.innerHTML = "<span class='takee'> ROUND TIED</span> ";
     takes.style.color ="#A8BFC9";
-    winnerP.textContent = ""
+    winnerP.textContent = "";
 }
-
 //QUIT GAME FUNCTION
 function quitGame2(){
    console.log("You Quit")
@@ -881,7 +873,6 @@ function quitGame2(){
    rectangle.style.display ="none";
    homePage.style.display= "inline-block";    
 }
-
 function cancelRestart2(){
     board.style.position = "inline-block"
     board.style.opacity = "1";    
@@ -933,7 +924,7 @@ function getBestMove() {
 
 
 function minimax(board, depth, isMaximizingPlayer) {
-    let result = checkWinner2(board);
+    let result = checkTie2(board);
     if (result !== null) {
         if (result === playerO) {
             return 10 - depth;
@@ -969,8 +960,7 @@ function minimax(board, depth, isMaximizingPlayer) {
                 }
             }
         }
-        return minScore;
-        
+        return minScore;        
     }
     
 }
