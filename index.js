@@ -1,23 +1,47 @@
 //DISPLAYING THE HOMEPAGE
 let homePage = document.getElementById("homePage"); //HOMEPAGE
 let board = document.getElementById("table");       //BOARD
-// 
+//
+let origBoard;
+
+let cells = document.querySelectorAll(".cell")
+
+
+let winCombos= [
+    [0, 1, 2],
+    [3, 4, 5],
+    [6, 7, 8],
+    [0, 3, 6],
+    [1, 4, 7],
+    [2, 5, 8],
+    [0, 4, 8],
+    [2, 4, 6]
+]
+
+
+
+
+
 let vsPlayer = document.getElementsByClassName("vs-player")[0];
 let vsCpu = document.getElementsByClassName("vs-cpu")[0];
-
-
+ 
+//Selecting a player
+let usePlayerX = document.getElementsByClassName("first-x")[0];
+let usePlayerO = document.getElementsByClassName("first-o")[0];
 
 // Defining the Variables
 let Board;
+let usePlayerOimage = "<img src='./assets/oplay copy.svg' id='playerOimageEffect'> ";
+let usePlayerXimage = "<img src='./assets/xplay copy.svg' id='playerXimageEffect'> ";
 let playerX = "<img src='./assets/icon-x.svg' id='x-img'> "; 
 let playerO = "<img src='./assets/icon-o.svg' id='o-img'>";
 let playerXwin = "<img src='./assets/icon-x-outline.svg' id='xwin-img'> ";
 let playerOwin = "<img src='./assets/icon-o-outline.svg' id='owin-img'>";
 let playerXX = "<img src='./assets/icon-x-outline1.svg' id='owin1-img'>";
 let playerOO = "<img src='./assets/icon-o-outline1.svg' id='owin1-img'>";
-var cells = document.getElementsByClassName('cell');
-let currPlayer = playerX;
-let gameOver = false;
+var cellsf = document.getElementsByClassName('cell');
+let currentPlayer = playerX;
+
 let xWin = false;
 let yWin = false;
 let i = 0;
@@ -46,38 +70,49 @@ let restart = document.getElementsByClassName("restart")[0];
 let redo = document.getElementsByClassName("first-row3")[0];
 let redoRectangle = document.getElementsByClassName("rectangle1")[0]
 let rectangle = document.getElementsByClassName("rectangle")[0];
-
+let aiPlayer = playerO;
+let huPlayer = playerX;
 //PLAYER'S TURN
 let xTurn = "<img src='./assets/xturn.svg' id='xturn'>";
 let oTurn = "<img src='./assets/oturn.svg' id='oturn'>";
-let turn = document.getElementsByClassName("first-row2")[0];    
-turn.innerHTML = xTurn + " TURN";
+let pturn = document.getElementsByClassName("first-row2")[0];    
+pturn.innerHTML = xTurn + " TURN";
 //END OF PLAYERS TURN
 
 let takeP = document.getElementsByClassName("takee")[0];
 
+function usePlayerOHandler() {
+    usePlayerO.innerHTML = usePlayerOimage;
+    usePlayerO.classList.add("use-player");
+    usePlayerX.removeEventListener("click", usePlayerXHandler);
+}
 
+function usePlayerXHandler() {
+    usePlayerX.innerHTML = usePlayerXimage;
+    usePlayerX.classList.add("use-player");
+    usePlayerO.removeEventListener("click", usePlayerOHandler);
+}
+
+usePlayerO.addEventListener("click", usePlayerOHandler);
+usePlayerX.addEventListener("click", usePlayerXHandler);
 
 
 playGame()
-vsPlayer.addEventListener("click", showBoard)
-redo.addEventListener("click",handleReset);
+vsCpu.addEventListener("click", showBoard)
+redo.addEventListener("click",handleReset)
 quit.addEventListener("click", quitGame)
 cancel.addEventListener('click', cancelRestart)
 restart.addEventListener("click",restartGame)
 nextRound.addEventListener("click",nextRoundGame)
-vsCpu.addEventListener("click", showBoard2)
+// vsCpu.addEventListener("click", showBoard2)
 // player vs player Board display
-function showBoard(){
-    
+
+function showBoard(){    
     homePage.style.display="none";
     redoRectangle.style.display = "none";
     rectangle.style.display ="none";
-
     board.style.display="inline-block";
-    board.style.position = "absolute";
-    // homePage.style.display ="inline-block";
-    
+    board.style.position = "absolute";  
     board.style.opacity = "1";
     //setting initial scores to 0
     scoreX = 0;
@@ -86,32 +121,18 @@ function showBoard(){
     Xscore.innerText = scoreX;
     Oscore.innerText =  scoreO;
     tieScore.innerText = scoreT;
-    startGame()
-    
+    startGame()    
 }
-// Player vs CPU Board Display
-// function showBoardCpu(){
-//     homePage.style.display="none"
-//     board.style.display="inline-block";
-//     renderGame()
-// }
 
-function playGame(){
-    
+
+
+function playGame(){    
     homePage.style.display ="inline-block";
     
 }
 
-function startGame(){
-     
-    for(let i = 0; i < cells.length; i++){
-        
-        cells[i].innerHTML = "";
-        cells[i].classList.remove("winnerO");
-        cells[i].classList.remove("winnerX");  
-        cells[i].removeEventListener("click", setTile);               
-        
-    }
+function startGame(){     
+    
     document.getElementsByClassName("score-x")[0].innerHTML = "X(P1)"
     document.getElementsByClassName("score-o")[0].innerHTML = "O(P2)"
     renderGame()
@@ -123,218 +144,161 @@ function startGame(){
 
 //Starting the Game for Player vs Player
 
-function renderGame(){  
-    currPlayer = playerX;
-    Board = [
-        [' ',' ',' '],
-        [' ',' ',' '],
-        [' ',' ',' ']
-    ]
-    
-    let i = 0;
-    for (let r = 0; r < 3; r++ ){
-        for (let c = 0; c < 3; c++){
-            let tile = document.getElementsByClassName("cell")[i];
-            i++;
-            if(tile){
-                tile.addEventListener("click",setTile) 
-
-            }
-                              
-        }
-    }
-    
-}
-
-
-function setTile(){
-    // if(gameOver){
-    //     return;
-    // }
-    
-    let coords = this.id.split("-")
-    let r = parseInt(coords[0]);
-    let c = parseInt(coords[1]);
-
-    if(Board[r][c] != " "){
-        return; 
-    }
-    
-
-    Board[r][c] = currPlayer;
-    this.innerText = currPlayer;    
-
-    if (currPlayer == playerO){
-        currPlayer = playerX;
+function renderGame(){   
+    origBoard = Array.from(Array(9).keys());
+    for(let i = 0; i < cells.length; i++){
+        cells[i].innerHTML = "";
+        cells[i].style.removeProperty("background-color");
+        cells[i].addEventListener("click", turnClick, false);
         
-    }else{
-        currPlayer = playerO;   
     } 
-    
-     
-    
-        if(this.innerText == playerO){            
-            this.innerHTML = playerO;
-            turn.innerHTML =  xTurn+ "TURN";
-        }else{            
-            this.innerHTML = playerX ;
-            turn.innerHTML =  oTurn+ "TURN";
-            }
-    
-    
-    checkWinner();
-    hover();
-    
-    
+}
+  
+function turnClick(square) {
+	if (typeof origBoard[square.target.id] == 'number') {
+		turn(square.target.id, huPlayer)
+		if (!checkWin(origBoard, huPlayer) && !checkTie()) turn(bestSpot(), aiPlayer);
+	}
+    hover()
 }
 
+function turn(squareId, player){
+    origBoard[squareId] = player;
+    document.getElementById(squareId).innerHTML = player;
+    let gameWon = checkWin(origBoard, player)
+    if (gameWon) gameOver(gameWon);
+    checkTie();
+}
+
+function checkWin(board, player) {
+	let plays = board.reduce((a, e, i) =>
+		(e === player) ? a.concat(i) : a, []);
+	let gameWon = null;
+	for (let [index, win] of winCombos.entries()) {
+		if (win.every(elem => plays.indexOf(elem) > -1)) {
+			gameWon = {index: index, player: player};
+			break;
+		}
+	}
+	return gameWon;
+}
+
+function gameOver(gameWon) {
+	for (let index of winCombos[gameWon.index]) {
+		document.getElementById(index).style.backgroundColor =
+			gameWon.player == aiPlayer ? "#F2B137" : "#31C3BD";
+            document.getElementById(index).innerHTML =
+			gameWon.player == aiPlayer ? playerOO : playerXX;    
+	}
+	for (var i = 0; i < cells.length; i++) {
+		cells[i].removeEventListener('click', turnClick, false);
+	}
+    declareWinner(gameOver.player == huPlayer ? huPlayer+"TAKES THE ROUND" : aiPlayer+ "TAKES THE ROUND")
+	//HANDLE WIN
+    declareWinningMessage(gameOver.player == huPlayer ? "YOU WON!" : "OH NO, YOU LOST...")
+}
+
+function emptySquares(){
+    return origBoard.filter(s => typeof s == "number");
+}
+
+function bestSpot(){
+    return minimax(origBoard, aiPlayer).index;
+}
+
+function declareWinner(who){
+    rectangle.style.display ="block";
+    table.style.zIndex ="-1"
+    takes.innerHTML = who;
+}
+
+function declareWinningMessage(msg){
+    winnerP.innerHTML = msg;
+}
+
+ 
+function checkTie(){
+    if (emptySquares().length == 0){
+        for( let i = 0; i < cells.length; i++){
+            cells[i].removeEventListener("click", turnClick, false);
+            
+        }
+        declareWinner("ROUND TIED")
+        declareWinningMessage("")
+        return true;
+    }
+    return false;
+}
+
+function minimax(newBoard, player) {
+	var availSpots = emptySquares();
+
+	if (checkWin(newBoard, huPlayer)) {
+		return {score: -10};
+	} else if (checkWin(newBoard, aiPlayer)) {
+		return {score: 10};
+	} else if (availSpots.length === 0) {
+		return {score: 0};
+	}
+	var moves = [];
+	for (var i = 0; i < availSpots.length; i++) {
+		var move = {};
+		move.index = newBoard[availSpots[i]];
+		newBoard[availSpots[i]] = player;
+
+		if (player == aiPlayer) {
+			var result = minimax(newBoard, huPlayer);
+			move.score = result.score;
+		} else {
+			var result = minimax(newBoard, aiPlayer);
+			move.score = result.score;
+		}
+
+		newBoard[availSpots[i]] = move.index;
+
+		moves.push(move);
+	}
+
+	var bestMove;
+	if(player === aiPlayer) {
+		var bestScore = -10000;
+		for(var i = 0; i < moves.length; i++) {
+			if (moves[i].score > bestScore) {
+				bestScore = moves[i].score;
+				bestMove = i;
+			}
+		}
+	} else {
+		var bestScore = 10000;
+		for(var i = 0; i < moves.length; i++) {
+			if (moves[i].score < bestScore) {
+				bestScore = moves[i].score;
+				bestMove = i;
+			}
+		}
+	}
+
+	return moves[bestMove];
+}
+
+
+// if(this.innerText == playerO){            
+//     this.innerHTML = playerO;
+//     turn.innerHTML =  xTurn+ "TURN";
+// }else{            
+//     this.innerHTML = playerX ;
+//     turn.innerHTML =  oTurn+ "TURN";
+//     }
 
 // CHECKING FOR THE WINNER
 
-function checkWinner(){
-    //Horizontally
-    for (let r = 0; r < 3; r++){
-        if (Board[r][0] == Board[r][1] && Board[r][1] == Board[r][2] && Board[r][0] != " " ){
-            for (let i = 0; i < 3; i++){
-                let tile = document.getElementById(r.toString() + "-" + i.toString());
-                if(Board[r][0] == playerO){
-                    tile.classList.add("winnerO")
-                    tile.innerHTML = playerOO;
-                    winEffectO()
-                    
-                    
-                    
-                }else{
-                    tile.classList.add("winnerX")                    
-                    tile.innerHTML = playerXX;
-                    winEffectX()
-                    
-                          
-            }
-        }
-            gameOver = true;
-            if (Board[r][0] == playerO) {
-                scoreO++; // Update playerO score
-              } else {
-                scoreX++; // Update playerX score
-              }
-            handleWin()
-            return;
-            
-        
-        
-    }
-}
-    
-    //Vertically**
-    for(let c = 0; c < 3; c++){
-        if(Board[0][c] == Board[1][c]  && Board[1][c] == Board[2][c] && Board[0][c] != " "){
-            for (let i = 0; i < 3; i++){
-                let tile = document.getElementById(i.toString() + "-" + c.toString());
-                if(Board[0][c] == playerO){
-                    tile.classList.add("winnerO")
-                    tile.innerHTML = playerOO;
-                    winEffectO()
-                    
-                }else{
-                    tile.classList.add("winnerX")                    
-                    tile.innerHTML = playerXX;
-                    winEffectX()
-                 }
-            
-            }
-            gameOver = true;
-            if (Board[0][c] == playerO) {
-                scoreO++; // Update playerO score
-              } else {
-                scoreX++; // Update playerX score
-              }
-            handleWin()
-            return;
-        }
-    }
 
-    //Diagonally**
-    if(Board[0][0] == Board[1][1] && Board[1][1] == Board[2][2] && Board[0][0] != " "){
-      for(let i = 0; i < 3; i++){
-        let tile = document.getElementById(i.toString() + "-" + i.toString());
-        if(Board[0][0] == playerO){
-                    tile.classList.add("winnerO")
-                    tile.innerHTML = playerOO;
-                    winEffectO()
-                    
-                }else{
-                    tile.classList.add("winnerX")                    
-                    tile.innerHTML = playerXX;
-                    winEffectX()
-                 }
-      }  
-      gameOver = true;
-      if (Board[0][0] == playerO) {
-        scoreO++; // Update playerO score
-      } else {
-        scoreX++; // Update playerX score
-      }
-      handleWin()
-      return;
-    }
 
-    //Anti-Digonally**
-    if (Board[0][2] == Board[1][1] && Board[1][1] == Board[2][0] && Board[0][2] != " "){
-        // 0-2
-        let tile = document.getElementById("0-2");
-        if(Board[0][2] == playerO){
-            tile.classList.add("winnerO")
-            tile.innerHTML = playerOO;
-            winEffectO()
-                    
-            }else{
-                tile.classList.add("winnerX")                    
-                tile.innerHTML = playerXX;
-                winEffectX()
-            }
 
-        // 1-1
-       tile = document.getElementById("1-1");
-        if(Board[1][1] == playerO){
-            tile.classList.add("winnerO")
-            tile.innerHTML = playerOO;
-            winEffectO()
-                    
-        }else{
-            tile.classList.add("winnerX")                    
-            tile.innerHTML = playerXX;
-            winEffectX()
-        }
-
-        // 2-0
-        tile = document.getElementById("2-0");
-        if(Board[2][0] == playerO){
-            tile.classList.add("winnerO")
-            tile.innerHTML = playerOO;
-            winEffectO()
-                    
-            }else{
-                tile.classList.add("winnerX")                    
-                tile.innerHTML = playerXX;
-                winEffectX()
-                }
-
-        gameOver = true;
-        if (Board[0][2] == playerO) {
-            scoreO++; // Update playerO score
-          } else {
-            scoreX++; // Update playerX score
-          }
-        handleWin()
-        
-        return;
-    }
-    checkTie(!gameOver)
     
     
     
-}
+
 
 
 function hover(){
@@ -363,21 +327,7 @@ function hover(){
       });
   }
 }
-function checkTie(){
-    // Get all div elements with class "cell"
-    // Convert the HTMLCollection to an array
-    const cellArray = Array.from(cells);
-    // Check if all cell divs are full
-    const allCellsFull = cellArray.every(cell => cell.childNodes.length > 0);
-    if (allCellsFull) {
-  // All divs with class "cell" are full         
-        handleTie();      
-        tieScore.innerText = scoreT + 1;
-        scoreT++
-        
 
-        }
-}
 
 
 
@@ -385,8 +335,8 @@ function checkTie(){
 function winEffectO(){
     takes.innerHTML = playerO + "<span class='takee'>TAKES THE ROUND</span> ";
     takes.style.color ="#F2B137";
-    winnerP.textContent = "Player 2 wins";
-    yWin = true;
+   
+    
     
     
 }
@@ -395,57 +345,17 @@ function winEffectX(){
     takes.innerHTML = playerX + "<span class='takee'>TAKES THE ROUND</span> ";
     takes.style.color ="#31C3BD";
     winnerP.textContent = "Player 1 wins";
-    xWin = true;     
+        
 }
 
-//UPDATING SCORES FUNCTION
-function updateScore(){
-    Xscore.innerText = scoreX;
-    Oscore.innerText =  scoreO;
-    tieScore.innerText = scoreT;    
-}
 
-//HANDLE RESET FUNCTION
-function handleReset(){
-    board.style.position = "absolute"
-    board.style.opacity = "0.1";
-    redoRectangle.style.position = "absolute";
-    redoRectangle.style.display = "inline-block";
-    redoRectangle.style.top = "0";
-    redoRectangle.style.left = "0";
-    redoRectangle.style.zIndex = "1";      
-}
-// HANDLE WIN FUNCTION
-function handleWin(){
-    board.style.position = "absolute"
-    board.style.opacity = "0.1";
-   
-    //FOR THE RECTANGLE WIN
-    rectangle.style.display = "inline-block"; 
-    rectangle.style.position = "absolute";
-    rectangle.style.top = "0";
-    rectangle.style.left = "0";
-    rectangle.style.zIndex = "1"; 
-    updateScore()
-}
-//HANDLE TIE FUNCTION
-function handleTie(){
-    board.style.position = "absolute"
-    board.style.opacity = "0.1";
-    //FOR THE RECTANGLE WIN
-    rectangle.style.display = "inline-block"; 
-    rectangle.style.position = "absolute";
-    rectangle.style.top = "0";
-    rectangle.style.left = "0";
-    rectangle.style.zIndex = "1"; 
-    takes.innerHTML = "<span class='takee'> ROUND TIED</span> ";
-    takes.style.color ="#A8BFC9";
-    winnerP.textContent = "";
-}
+
+
+
+
 
 //QUIT GAME FUNCTION
 function quitGame(){
-   console.log("You Quit")
    board.style.display ="none";
    rectangle.style.display ="none";
    homePage.style.display= "inline-block";    
@@ -463,8 +373,7 @@ function restartGame(){
     board.style.opacity = "1";
     scoreX = 0;
     scoreO = 0;
-    scoreT = 0;
-    updateScore()
+    scoreT = 0;   
     startGame()
 }
 
@@ -472,366 +381,14 @@ function nextRoundGame(){
     rectangle.style.display ="none";
     board.style.opacity = "1";   
     board.style.position = "absolute"; 
-    startGame()
-}
-
-
-//the minimax algorithm
-
-
-// PLAYER VS CPU CODE
-
-
-
-
-
-
-
-
-
-
-
-function showBoard2(){
-    
-    homePage.style.display="none";
-    redoRectangle.style.display = "none";
-    rectangle.style.display ="none";
-
-    board.style.display="inline-block";
-    
-    // homePage.style.display ="inline-block";
-    
-    board.style.opacity = "1";
-    //setting initial scores to 0
-    scoreX = 0;
-    scoreO = 0;
-    scoreT = 0;
-    Xscore.innerText = scoreX;
-    Oscore.innerText =  scoreO;
-    tieScore.innerText = scoreT;
-    startGame2()
-    
-}
-// Player vs CPU Board Display
-// function showBoardCpu(){
-//     homePage.style.display="none"
-//     board.style.display="inline-block";
-//     renderGame()
-// }
-
-function playGame2(){
-    
-    homePage.style.display ="inline-block";
-    
-}
-
-function startGame2(){
-     
-    for(let i = 0; i < cells.length; i++){
-        
-        cells[i].innerHTML = "";
-        cells[i].classList.remove("winnerO");
-        cells[i].classList.remove("winnerX");  
-        cells[i].removeEventListener("click", setTile2);               
-        
-    }
-    renderGame2()
-    document.getElementsByClassName("score-x")[0].innerHTML = "X(YOU)"
-    document.getElementsByClassName("score-o")[0].innerHTML = "O(CPU)"
+   startGame()
 }
 
 
 
-
-
-//Starting the Game for Player vs Player
-
-function renderGame2(){  
-    currPlayer = playerX;
-    Board = [
-        [' ',' ',' '],
-        [' ',' ',' '],
-        [' ',' ',' ']
-    ]
-    
-    let i = 0;
-    for (let r = 0; r < 3; r++ ){
-        for (let c = 0; c < 3; c++){
-            let tile = document.getElementsByClassName("cell")[i];
-            i++;
-            if(tile){
-                tile.addEventListener("click",setTile2) 
-
-            }
-                              
-        }
-    }    
-}
-
-
-
-function setTile2(){
-    // if(gameOver){
-    //     return;
-    // }
-    
-    let coords = this.id.split("-")
-    let r = parseInt(coords[0]);
-    let c = parseInt(coords[1]);
-
-    if(Board[r][c] != " "){
-        return; 
-    }
-    
-
-    Board[r][c] = currPlayer;
-    this.innerText = currPlayer;  
-        getBestMove() 
-    
-        
-   
-     
-    
-        if(this.innerText == playerO){            
-            this.innerHTML = playerO;
-            turn.innerHTML =  xTurn+ "TURN";
-        }else{            
-            this.innerHTML = playerX ;
-            turn.innerHTML =  oTurn+ "TURN";
-            }
-    
-    
-    checkWinner2();
-    hover2();
-    
-    
-}
-
-
-
-
-
-
-
-
-
-
-
-// CHECKING FOR THE WINNER
-
-function checkWinner2(){
-    //Horizontally
-    for (let r = 0; r < 3; r++){
-        if (Board[r][0] == Board[r][1] && Board[r][1] == Board[r][2] && Board[r][0] != " " ){
-            for (let i = 0; i < 3; i++){
-                let tile = document.getElementById(r.toString() + "-" + i.toString());
-                if(Board[r][0] == playerO){
-                    tile.classList.add("winnerO")
-                    tile.innerHTML = playerOO;
-                    winEffectO2()
-                    
-                    
-                    
-                }else{
-                    tile.classList.add("winnerX")                    
-                    tile.innerHTML = playerXX;
-                    winEffectX2()
-                    
-                          
-            }
-        }
-            gameOver = true;
-            if (Board[r][0] == playerO) {
-                scoreO++; // Update playerO score
-              } else {
-                scoreX++; // Update playerX score
-              }
-            handleWin2()
-            return Board[r][0];
-            
-        
-        
-    }
-}
-    
-    //Vertically**
-    for(let c = 0; c < 3; c++){
-        if(Board[0][c] == Board[1][c]  && Board[1][c] == Board[2][c] && Board[0][c] != " "){
-            for (let i = 0; i < 3; i++){
-                let tile = document.getElementById(i.toString() + "-" + c.toString());
-                if(Board[0][c] == playerO){
-                    tile.classList.add("winnerO")
-                    tile.innerHTML = playerOO;
-                    winEffectO2()
-                    
-                }else{
-                    tile.classList.add("winnerX")                    
-                    tile.innerHTML = playerXX;
-                    winEffectX2()
-                 }
-            
-            }
-            gameOver = true;
-            if (Board[0][c] == playerO) {
-                scoreO++; // Update playerO score
-              } else {
-                scoreX++; // Update playerX score
-              }
-            handleWin2()
-            return Board[0][c];
-        }
-    }
-
-    //Diagonally**
-    if(Board[0][0] == Board[1][1] && Board[1][1] == Board[2][2] && Board[0][0] != " "){
-      for(let i = 0; i < 3; i++){
-        let tile = document.getElementById(i.toString() + "-" + i.toString());
-        if(Board[0][0] == playerO){
-                    tile.classList.add("winnerO")
-                    tile.innerHTML = playerOO;
-                    winEffectO2()
-                    
-                }else{
-                    tile.classList.add("winnerX")                    
-                    tile.innerHTML = playerXX;
-                    winEffectX2()
-                 }
-      }  
-      gameOver = true;
-      if (Board[0][0] == playerO) {
-        scoreO++; // Update playerO score
-      } else {
-        scoreX++; // Update playerX score
-      }
-      handleWin2()
-      return Board[0][0] ;
-    }
-
-    //Anti-Digonally**
-    if (Board[0][2] == Board[1][1] && Board[1][1] == Board[2][0] && Board[0][2] != " "){
-        // 0-2
-        let tile = document.getElementById("0-2");
-        if(Board[0][2] == playerO){
-            tile.classList.add("winnerO")
-            tile.innerHTML = playerOO;
-            winEffectO2()
-                    
-            }else{
-                tile.classList.add("winnerX")                    
-                tile.innerHTML = playerXX;
-                winEffectX2()
-            }
-
-        // 1-1
-       tile = document.getElementById("1-1");
-        if(Board[1][1] == playerO){
-            tile.classList.add("winnerO")
-            tile.innerHTML = playerOO;
-            winEffectO2()
-                    
-        }else{
-            tile.classList.add("winnerX")                    
-            tile.innerHTML = playerXX;
-            winEffectX2()
-        }
-
-        // 2-0
-        tile = document.getElementById("2-0");
-        if(Board[2][0] == playerO){
-            tile.classList.add("winnerO")
-            tile.innerHTML = playerOO;
-            winEffectO2()
-                    
-            }else{
-                tile.classList.add("winnerX")                    
-                tile.innerHTML = playerXX;
-                winEffectX2()
-                }
-
-        gameOver = true;
-        if (Board[0][2] == playerO) {
-            scoreO++; // Update playerO score
-          } else {
-            scoreX++; // Update playerX score
-          }
-        handleWin2()
-        
-        return Board[0][2] ;
-    }
-    checkTie2(!gameOver)
-    
-    
-    
-}
-
-
-
-function hover2(){
-    // Loop through cells
-  for (let i = 0; i < cells.length; i++) {
-      cells[i].addEventListener('mouseenter', function() {
-          // Change image on mouseenter         
-          if(this.innerHTML.length === playerO.length){
-              this.innerHTML = playerOwin;             
-
-          } else if (this.innerHTML.length === playerX.length){
-              this.innerHTML = playerXwin;                
-          } else {                
-                  return
-          }
-      });
-      cells[i].addEventListener('mouseleave', function() {
-          // Change image back on mouseleave   
-          if(this.innerHTML.length == playerOwin.length){
-              this.innerHTML = playerO;                
-          } else if (this.innerHTML.length == playerXwin.length){
-              this.innerHTML = playerX;                
-          } else {
-              return;
-          }
-      });
-  }
-}
-function checkTie2(){
-    // Get all div elements with class "cell"
-    // Convert the HTMLCollection to an array
-    const cellArray = Array.from(cells);
-    // Check if all cell divs are full
-    const allCellsFull = cellArray.every(cell => cell.childNodes.length > 0);
-    if (allCellsFull) {
-  // All divs with class "cell" are full         
-        handleTie2();      
-        tieScore.innerText = scoreT + 1;
-        scoreT++       
-
-        }
-}
-
-function winEffectO2(){
-    takes.innerHTML = playerO + "<span class='takee'>TAKES THE ROUND</span> ";
-    takes.style.color ="#F2B137";
-    winnerP.textContent = "OH NO, YOU LOST...";
-    yWin = true;
-    
-    
-}
-function winEffectX2(){
-    takes.innerHTML = playerX + "<span class='takee'>TAKES THE ROUND</span> ";
-    takes.style.color ="#31C3BD";
-    winnerP.textContent = "YOU WON!";
-    xWin = true;     
-}
-
-//UPDATING SCORES FUNCTION
-function updateScore2(){
-    Xscore.innerText = scoreX;
-    Oscore.innerText =  scoreO;
-    tieScore.innerText = scoreT;
-    
-}
 //HANDLE RESET FUNCTION
-function handleReset2(){
-    board.style.position = "absolute";
+function handleReset(){
+    board.style.position = "absolute"
     board.style.opacity = "0.1";
     redoRectangle.style.position = "absolute";
     redoRectangle.style.display = "inline-block";
@@ -840,127 +397,16 @@ function handleReset2(){
     redoRectangle.style.zIndex = "1";      
 }
 // HANDLE WIN FUNCTION
-function handleWin2(){
+function handleWin(){
     board.style.position = "absolute"
-    board.style.opacity = "0.1";
-   
+    board.style.opacity = "0.1";   
     //FOR THE RECTANGLE WIN
     rectangle.style.display = "inline-block"; 
     rectangle.style.position = "absolute";
     rectangle.style.top = "0";
     rectangle.style.left = "0";
     rectangle.style.zIndex = "1"; 
-    updateScore2()
-}
-//HANDLE TIE FUNCTION
-function handleTie2(){
-    board.style.position = "absolute";
-    board.style.opacity = "0.1";
-    //FOR THE RECTANGLE WIN
-    rectangle.style.display = "inline-block"; 
-    rectangle.style.position = "absolute";
-    rectangle.style.top = "0";
-    rectangle.style.left = "0";
-    rectangle.style.zIndex = "1"; 
-    takes.innerHTML = "<span class='takee'> ROUND TIED</span> ";
-    takes.style.color ="#A8BFC9";
-    winnerP.textContent = "";
-}
-//QUIT GAME FUNCTION
-function quitGame2(){
-   console.log("You Quit")
-   board.style.display ="none";
-   rectangle.style.display ="none";
-   homePage.style.display= "inline-block";    
-}
-function cancelRestart2(){
-    board.style.position = "inline-block"
-    board.style.opacity = "1";    
-    redoRectangle.style.display = "none";        
-}
-
-//RESTART GAME
-function restartGame2(){
-    redoRectangle.style.display = "none";
-    board.style.opacity = "1";
-    scoreX = 0;
-    scoreO = 0;
-    scoreT = 0;
-    updateScore2()
-    startGame2()
-}
-
-function nextRoundGame2(){
-    rectangle.style.display ="none";
-    board.style.opacity = "1";    
-    startGame2()
-}
-function getBestMove() {
-    let bestScore = -Infinity;
-    let move = { row: -1, col: -1 }; // Initialize move object
-    for (let r = 0; r < 3; r++) {
-        for (let c = 0; c < 3; c++) {
-            if (Board[r][c] === ' ') {
-                Board[r][c] = playerO;
-                let score = minimax(Board, 0, false);
-                Board[r][c] = ' ';
-                if (score > bestScore) {
-                    bestScore = score;
-                    move.row = r; // Update row
-                    move.col = c; // Update col
-                }
-            }
-        }
-    }
-    if (move.row !== -1 && move.col !== -1) { // Check if a valid move was found
-        Board[move.row][move.col] = playerO;
-        let tile = document.getElementById(move.row + '-' + move.col);
-        tile.innerHTML = playerO;
-        
-        
-    }currPlayer = playerX
-    
+    updateScore()
 }
 
 
-function minimax(board, depth, isMaximizingPlayer) {
-    let result = checkTie2(board);
-    if (result !== null) {
-        if (result === playerO) {
-            return 10 - depth;
-        } else if (result === playerX) {
-            return depth - 10;
-        } else {
-            return 0;
-        }
-    }
-
-    if (isMaximizingPlayer) {
-        let maxScore = -Infinity;
-        for (let r = 0; r < 3; r++) {
-            for (let c = 0; c < 3; c++) {
-                if (board[r][c] === ' ') {
-                    board[r][c] = playerO;
-                    let score = minimax(board, depth + 1, false);
-                    board[r][c] = ' ';
-                    maxScore = Math.max(maxScore, score);
-                }
-            }
-        }
-        return maxScore;
-    } else {
-        let minScore = Infinity;
-        for (let r = 0; r < 3; r++) {
-            for (let c = 0; c < 3; c++) {
-                if (board[r][c] === ' ') {
-                    board[r][c] = playerX;
-                    let score = minimax(board, depth + 1, true);
-                    board[r][c] = ' ';
-                    minScore = Math.min(minScore, score);
-                }
-            }
-        }
-        return minScore;        
-    }
-    
-}

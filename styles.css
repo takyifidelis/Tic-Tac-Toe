@@ -14,6 +14,7 @@ body {
     margin:0;
     padding:0;
     overflow-x: hidden;
+    position: relative;
   }
   
   *,
@@ -91,6 +92,13 @@ body {
     background-color: #65E9E4;
     
   }
+  .use-player{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #A8BFC9;
+
+  }
   
 
   .new-game{
@@ -115,7 +123,6 @@ body {
 .first-x{
     width:45%;
     height: 80%;
-    background-color: #1A2A33;
     color: #A8BFC9;
     cursor: pointer;
     border-radius: 10px;
@@ -126,7 +133,6 @@ body {
 .first-o{
     width:45%;
     height: 80%;
-    background-color: #A8BFC9;
     border-radius: 10px;
     color:  #1A2A33;
     align-items: center;
@@ -134,6 +140,9 @@ body {
     cursor: pointer;
 
 } 
+.first-o:hover{
+  background-color: #1F3641;
+}
 .rememberX{
   font-family: 'Outfit', sans-serif;
   font-size: 14px;
