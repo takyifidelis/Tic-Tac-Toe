@@ -1,12 +1,65 @@
 //DISPLAYING THE HOMEPAGE
-let homePage = document.getElementById("homePage"); //HOMEPAGE
-let board = document.getElementById("table");       //BOARD
+const homePage = document.getElementById("homePage"); //HOMEPAGE
+const board = document.getElementById("table");       //BOARD
 //
 let origBoard;
-
 let cells = document.querySelectorAll(".cell")
 
+const vsPlayer = document.querySelector(".vs-player");
+const vsCpu = document.querySelector(".vs-cpu");
+ 
+//Selecting a player
+const usePlayerX = document.querySelector(".first-x");
+const usePlayerO = document.querySelector(".first-o");
 
+// Defining the Variables
+//Variables for the Images
+let usePlayerOimage = "<img src='./assets/oplay copy.svg' id='playerOimageEffect'> ";
+let usePlayerXimage = "<img src='./assets/xplay copy.svg' id='playerXimageEffect'> ";
+let usePlayerOinitImg = "<img src='./assets/oplay.svg' >";
+let usePlayerXinitImg = "<img src='./assets/Xplay.svg' >";
+let playerX = "<img src='./assets/icon-x.svg' id='x-img'> ";  
+let playerO = "<img src='./assets/icon-o.svg' id='o-img'>";
+let playerXwin = "<img src='./assets/icon-x-outline.svg' id='xwin-img'> ";
+let playerOwin = "<img src='./assets/icon-o-outline.svg' id='owin-img'>";
+let playerXX = "<img src='./assets/icon-x-outline1.svg' id='owin1-img'>";
+let playerOO = "<img src='./assets/icon-o-outline1.svg' id='owin1-img'>";
+
+const playerXscoreDisplay = document.querySelector(".score-x");
+const playerOscoreDisplay = document.querySelector(".score-o");
+const xScoreNumber = document.querySelector(".score-x-num");
+const oScoreNumber = document.querySelector(".score-o-num");
+const tieScoreNumber = document.querySelector(".score-tie-num");
+let scoreX = 0;
+let scoreO = 0;
+let scoreT = 0;
+
+// DEFINING VARIABLES FOR THE WIN-RECTANGLE
+const winnerP = document.querySelector(".winnerP");
+const takes = document.querySelector(".takes");
+
+// Defining Varibles for the buttons
+const quit = document.querySelector(".quit");
+const nextRound = document.querySelector(".next-round");
+const cancel = document.querySelector(".cancel");
+const restart = document.querySelector(".restart");
+const redo = document.querySelector(".first-row3");
+
+// DEFINING VARIABLE FOR THE RESTART RECTANGLE
+const redoRectangle = document.querySelector(".rectangle1");
+const rectangle = document.querySelector(".rectangle");
+
+// players for vs Computer
+let aiPlayer;
+let huPlayer;
+
+//PLAYER'S TURN DISPLAY VARIABLES
+const xTurn = "<img src='./assets/xturn.svg' id='xturn'>";
+const oTurn = "<img src='./assets/oturn.svg' id='oturn'>";
+const playerTurn = document.querySelector(".first-row2");    
+//END OF PLAYERS TURN
+
+//Defining the winning combinations
 let winCombos= [
     [0, 1, 2],
     [3, 4, 5],
@@ -22,155 +75,136 @@ let winCombos= [
 
 
 
-let vsPlayer = document.getElementsByClassName("vs-player")[0];
-let vsCpu = document.getElementsByClassName("vs-cpu")[0];
- 
-//Selecting a player
-let usePlayerX = document.getElementsByClassName("first-x")[0];
-let usePlayerO = document.getElementsByClassName("first-o")[0];
-
-// Defining the Variables
-let Board;
-let usePlayerOimage = "<img src='./assets/oplay copy.svg' id='playerOimageEffect'> ";
-let usePlayerXimage = "<img src='./assets/xplay copy.svg' id='playerXimageEffect'> ";
-let playerX = "<img src='./assets/icon-x.svg' id='x-img'> "; 
-let playerO = "<img src='./assets/icon-o.svg' id='o-img'>";
-let playerXwin = "<img src='./assets/icon-x-outline.svg' id='xwin-img'> ";
-let playerOwin = "<img src='./assets/icon-o-outline.svg' id='owin-img'>";
-let playerXX = "<img src='./assets/icon-x-outline1.svg' id='owin1-img'>";
-let playerOO = "<img src='./assets/icon-o-outline1.svg' id='owin1-img'>";
-var cellsf = document.getElementsByClassName('cell');
-let currentPlayer = playerX;
-
-let xWin = false;
-let yWin = false;
-let i = 0;
-let Xscore = document.getElementsByClassName("score-x-num")[0];
-let Oscore = document.getElementsByClassName("score-o-num")[0];
-let tieScore = document.getElementsByClassName("score-tie-num")[0];
-let scoreX = 0;
-let scoreO = 0;
-let scoreT = 0;
-
-// Xscore.innerText = scoreX;
-// Oscore.innerText = scoreO;
-// tieScore.innerText = scoreT;
 
 
-// DEFINING VARIABLES FOR THE WIN-RECTANGLE
-let winnerP = document.getElementsByClassName("winnerP")[0];
-let takes = document.getElementsByClassName("takes")[0];
 
-let quit = document.getElementsByClassName("quit")[0];
-let nextRound = document.getElementsByClassName("next-round")[0];
 
-// DEFINING VARIABLE FOR THE RESTART RECTANGLE
-let cancel = document.getElementsByClassName("cancel")[0];
-let restart = document.getElementsByClassName("restart")[0];
-let redo = document.getElementsByClassName("first-row3")[0];
-let redoRectangle = document.getElementsByClassName("rectangle1")[0]
-let rectangle = document.getElementsByClassName("rectangle")[0];
-let aiPlayer = playerO;
-let huPlayer = playerX;
-//PLAYER'S TURN
-let xTurn = "<img src='./assets/xturn.svg' id='xturn'>";
-let oTurn = "<img src='./assets/oturn.svg' id='oturn'>";
-let pturn = document.getElementsByClassName("first-row2")[0];    
-pturn.innerHTML = xTurn + " TURN";
-//END OF PLAYERS TURN
 
-let takeP = document.getElementsByClassName("takee")[0];
 
-function usePlayerOHandler() {
-    usePlayerO.innerHTML = usePlayerOimage;
-    usePlayerO.classList.add("use-player");
-    usePlayerX.removeEventListener("click", usePlayerXHandler);
+// FUNCTIONS
+const selectAPlayer = () => {
+    alert("PLEASE PICK A MARK!!!")
 }
-
-function usePlayerXHandler() {
+const usePlayerXHandler = () => {
     usePlayerX.innerHTML = usePlayerXimage;
     usePlayerX.classList.add("use-player");
+    aiPlayer = playerO;
+    huPlayer = playerX;
     usePlayerO.removeEventListener("click", usePlayerOHandler);
+    vsCpu.removeEventListener("click", selectAPlayer)
+    vsCpu.addEventListener("click", showBoard)  
+}
+const usePlayerOHandler = () => {
+    usePlayerO.innerHTML = usePlayerOimage;
+    usePlayerO.classList.add("use-player");
+    aiPlayer = playerX;
+    huPlayer = playerO;
+    usePlayerX.removeEventListener("click", usePlayerXHandler);
+    vsCpu.removeEventListener("click", selectAPlayer)
+    vsCpu.addEventListener("click", showBoard)
 }
 
-usePlayerO.addEventListener("click", usePlayerOHandler);
-usePlayerX.addEventListener("click", usePlayerXHandler);
+const playGame = () => {    
+    homePage.style.display ="inline-block";
+    usePlayerO.addEventListener("click", usePlayerOHandler);
+    usePlayerX.addEventListener("click", usePlayerXHandler);    
+}
+
+
+const defaultPlayerSelection = () => {
+    usePlayerX.innerHTML = usePlayerXinitImg;
+    usePlayerX.classList.remove("use-player");
+    usePlayerX.classList.add(".use-first-effects")
+    usePlayerO.innerHTML = usePlayerOinitImg;
+    usePlayerO.classList.remove("use-player");
+    usePlayerO.classList.add(".use-first-effects")    
+}
+
+const removeInitialEffects = () =>{
+    usePlayerO.innerHTML = usePlayerOinitImg;
+    usePlayerO.classList.remove("use-player");
+    usePlayerO.classList.add("use-first-effects")
+    usePlayerX.innerHTML = usePlayerXinitImg;
+    usePlayerX.classList.remove("use-player");
+    usePlayerX.classList.add("use-first-effects")
+}
+
+
+
+
 
 
 playGame()
-vsCpu.addEventListener("click", showBoard)
-redo.addEventListener("click",handleReset)
-quit.addEventListener("click", quitGame)
-cancel.addEventListener('click', cancelRestart)
-restart.addEventListener("click",restartGame)
-nextRound.addEventListener("click",nextRoundGame)
-// vsCpu.addEventListener("click", showBoard2)
-// player vs player Board display
-
-function showBoard(){    
+const showBoard = () => {    
+    displayScores()
     homePage.style.display="none";
     redoRectangle.style.display = "none";
     rectangle.style.display ="none";
     board.style.display="inline-block";
     board.style.position = "absolute";  
     board.style.opacity = "1";
+    
     //setting initial scores to 0
     scoreX = 0;
     scoreO = 0;
     scoreT = 0;
-    Xscore.innerText = scoreX;
-    Oscore.innerText =  scoreO;
-    tieScore.innerText = scoreT;
+    xScoreNumber.innerText = scoreX;
+    oScoreNumber.innerText =  scoreO;
+    tieScoreNumber.innerText = scoreT;
     startGame()    
 }
 
 
+//DISPLAYING THE HOME PAGE
 
-function playGame(){    
-    homePage.style.display ="inline-block";
+
+const startGame = () => {   
+    xScoreNumber.innerText = scoreX;
+    oScoreNumber.innerText =  scoreO;
+    tieScoreNumber.innerText = scoreT;
+    playerTurn.innerHTML =  xTurn+ "TURN";
+    renderGame()   
     
 }
-
-function startGame(){     
-    
-    document.getElementsByClassName("score-x")[0].innerHTML = "X(P1)"
-    document.getElementsByClassName("score-o")[0].innerHTML = "O(P2)"
-    renderGame()
-}
-
-
-
-
 
 //Starting the Game for Player vs Player
-
-function renderGame(){   
-    origBoard = Array.from(Array(9).keys());
+const renderGame =() => {   
+    origBoard = Array.from(Array(9).keys());    
     for(let i = 0; i < cells.length; i++){
         cells[i].innerHTML = "";
-        cells[i].style.removeProperty("background-color");
-        cells[i].addEventListener("click", turnClick, false);
-        
-    } 
+        cells[i].style.removeProperty("background-color");        
+        cells[i].addEventListener('click', turnClick, false);
+ } 
+ if (aiPlayer == playerX) {
+   setTimeout(() => {
+    
+    turn(bestSpot(),aiPlayer)
+    
+   },"500" ) ;
+  }
 }
   
-function turnClick(square) {
+const turnClick = (square)=> {
 	if (typeof origBoard[square.target.id] == 'number') {
 		turn(square.target.id, huPlayer)
-		if (!checkWin(origBoard, huPlayer) && !checkTie()) turn(bestSpot(), aiPlayer);
+		if (!checkWin(origBoard, huPlayer) && !checkTie()) 
+        setTimeout(() => {turn(bestSpot(), aiPlayer)},"300") ;
 	}
     hover()
 }
 
-function turn(squareId, player){
+const turn = (squareId, player) => {
     origBoard[squareId] = player;
     document.getElementById(squareId).innerHTML = player;
+    if(player == playerO){
+        playerTurn.innerHTML =  xTurn+ "TURN";
+    }else{playerTurn.innerHTML =  oTurn+ "TURN";}
     let gameWon = checkWin(origBoard, player)
     if (gameWon) gameOver(gameWon);
     checkTie();
 }
 
-function checkWin(board, player) {
+const checkWin = (board, player) => {
 	let plays = board.reduce((a, e, i) =>
 		(e === player) ? a.concat(i) : a, []);
 	let gameWon = null;
@@ -179,17 +213,31 @@ function checkWin(board, player) {
 			gameWon = {index: index, player: player};
 			break;
 		}
-	}
+	}    
 	return gameWon;
 }
 
-function gameOver(gameWon) {
+
+const gameOver = (gameWon) => {
 	for (let index of winCombos[gameWon.index]) {
-		document.getElementById(index).style.backgroundColor =
-			gameWon.player == aiPlayer ? "#F2B137" : "#31C3BD";
-            document.getElementById(index).innerHTML =
-			gameWon.player == aiPlayer ? playerOO : playerXX;    
-	}
+        const element = document.getElementById(index);
+        if (gameWon.player === aiPlayer) {
+          element.style.backgroundColor = (aiPlayer === playerO) ? "#F2B137" : "#31C3BD";
+          element.innerHTML = (aiPlayer === playerO) ? playerOO : playerXX;
+        } else {
+          element.style.backgroundColor = (aiPlayer === playerX) ? "#F2B137" : "#31C3BD";
+          element.innerHTML = (aiPlayer === playerX) ? playerXX : playerOO;
+        }
+      }
+    // update scores
+    if (gameWon.player == playerO) {
+        scoreO++;
+    } else if (gameWon.player == playerX) {
+        scoreX++;
+    } else{
+        // scoreT++;
+    }
+
 	for (var i = 0; i < cells.length; i++) {
 		cells[i].removeEventListener('click', turnClick, false);
 	}
@@ -198,39 +246,48 @@ function gameOver(gameWon) {
     declareWinningMessage(gameOver.player == huPlayer ? "YOU WON!" : "OH NO, YOU LOST...")
 }
 
-function emptySquares(){
+let emptySquares = () => {
     return origBoard.filter(s => typeof s == "number");
 }
 
-function bestSpot(){
+const bestSpot = () => {
     return minimax(origBoard, aiPlayer).index;
 }
 
-function declareWinner(who){
+const declareWinner = (who) => {
     rectangle.style.display ="block";
     table.style.zIndex ="-1"
     takes.innerHTML = who;
+    if (who.includes(aiPlayer)) {
+        takes.style.color = (aiPlayer === playerO) ? "#F2B137" : "#31C3BD";
+        
+    } else if (who.includes("TIE")) {
+        takes.style.color = "#A8BFC9";
+        scoreT++   
+    } else {
+        takes.style.color = (aiPlayer === playerO) ? "#31C3BD" : "#F2B137";  
+    }
 }
 
-function declareWinningMessage(msg){
+const declareWinningMessage = (msg) => {
     winnerP.innerHTML = msg;
 }
 
  
-function checkTie(){
-    if (emptySquares().length == 0){
+const checkTie = () => {
+    if (emptySquares().length == 0){        
         for( let i = 0; i < cells.length; i++){
-            cells[i].removeEventListener("click", turnClick, false);
-            
-        }
+            cells[i].removeEventListener("click", turnClick, false);            
+        }   
         declareWinner("ROUND TIED")
-        declareWinningMessage("")
+        declareWinningMessage("")        
         return true;
-    }
-    return false;
+    }    
+    return false;    
 }
 
-function minimax(newBoard, player) {
+
+const minimax = (newBoard, player) => {
 	var availSpots = emptySquares();
 
 	if (checkWin(newBoard, huPlayer)) {
@@ -282,26 +339,7 @@ function minimax(newBoard, player) {
 }
 
 
-// if(this.innerText == playerO){            
-//     this.innerHTML = playerO;
-//     turn.innerHTML =  xTurn+ "TURN";
-// }else{            
-//     this.innerHTML = playerX ;
-//     turn.innerHTML =  oTurn+ "TURN";
-//     }
-
-// CHECKING FOR THE WINNER
-
-
-
-
-    
-    
-    
-
-
-
-function hover(){
+let hover = () => {
     // Loop through cells
   for (let i = 0; i < cells.length; i++) {
       cells[i].addEventListener('mouseenter', function() {
@@ -328,47 +366,24 @@ function hover(){
   }
 }
 
-
-
-
-
-function winEffectO(){
-    takes.innerHTML = playerO + "<span class='takee'>TAKES THE ROUND</span> ";
-    takes.style.color ="#F2B137";
-   
-    
-    
-    
-}
-
-function winEffectX(){
-    takes.innerHTML = playerX + "<span class='takee'>TAKES THE ROUND</span> ";
-    takes.style.color ="#31C3BD";
-    winnerP.textContent = "Player 1 wins";
-        
-}
-
-
-
-
-
-
-
 //QUIT GAME FUNCTION
-function quitGame(){
+let quitGame = () => {
+    // removeInitialEffects()
    board.style.display ="none";
    rectangle.style.display ="none";
    homePage.style.display= "inline-block";    
+   defaultPlayerSelection()
+  
 }
 
-function cancelRestart(){
+let cancelRestart = ()=>{
     board.style.position = "inline-block"
     board.style.opacity = "1";    
     redoRectangle.style.display = "none";        
 }
 
 //RESTART GAME
-function restartGame(){
+let restartGame = () => {
     redoRectangle.style.display = "none";
     board.style.opacity = "1";
     scoreX = 0;
@@ -377,36 +392,44 @@ function restartGame(){
     startGame()
 }
 
-function nextRoundGame(){
+let nextRoundGame = () => { 
     rectangle.style.display ="none";
-    board.style.opacity = "1";   
-    board.style.position = "absolute"; 
-   startGame()
+    table.style.zIndex ="1"
+    updateScore()
+    startGame()
 }
-
-
-
 //HANDLE RESET FUNCTION
-function handleReset(){
+let handleReset = () => {
     board.style.position = "absolute"
     board.style.opacity = "0.1";
     redoRectangle.style.position = "absolute";
     redoRectangle.style.display = "inline-block";
     redoRectangle.style.top = "0";
     redoRectangle.style.left = "0";
-    redoRectangle.style.zIndex = "1";      
-}
-// HANDLE WIN FUNCTION
-function handleWin(){
-    board.style.position = "absolute"
-    board.style.opacity = "0.1";   
-    //FOR THE RECTANGLE WIN
-    rectangle.style.display = "inline-block"; 
-    rectangle.style.position = "absolute";
-    rectangle.style.top = "0";
-    rectangle.style.left = "0";
-    rectangle.style.zIndex = "1"; 
-    updateScore()
+    redoRectangle.style.zIndex = "1";    
+    // redoRectangle.classList.add('.handle-reset')  
+    
 }
 
+let displayScores = () => {
+    if(aiPlayer == playerX){       
+        playerXscoreDisplay.innerHTML = "X(CPU)"
+        playerOscoreDisplay.innerHTML = "O(YOU)" 
+    }else{
+        playerXscoreDisplay.innerHTML = "X(YOU)" 
+        playerOscoreDisplay.innerHTML = "O(CPU)"
+    }   }
+     
 
+let updateScore = () => {
+    xScoreNumber.innerText = scoreX;
+    oScoreNumber.innerText =  scoreO;
+    tieScoreNumber.innerText = scoreT;
+}
+
+vsCpu.addEventListener("click",selectAPlayer)
+redo.addEventListener("click",handleReset)
+quit.addEventListener("click", quitGame)
+cancel.addEventListener('click', cancelRestart)
+restart.addEventListener("click",restartGame)
+nextRound.addEventListener("click",nextRoundGame)
