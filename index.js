@@ -24,7 +24,7 @@ let playerXwin = "<img src='./assets/icon-x-outline.svg' id='xwin-img'> ";
 let playerOwin = "<img src='./assets/icon-o-outline.svg' id='owin-img'>";
 let playerXX = "<img src='./assets/icon-x-outline1.svg' id='owin1-img'>";
 let playerOO = "<img src='./assets/icon-o-outline1.svg' id='owin1-img'>";
-
+//Variables for the Scores
 const playerXscoreDisplay = document.querySelector(".score-x");
 const playerOscoreDisplay = document.querySelector(".score-o");
 const xScoreNumber = document.querySelector(".score-x-num");
@@ -39,11 +39,11 @@ const winnerP = document.querySelector(".winnerP");
 const takes = document.querySelector(".takes");
 
 // Defining Varibles for the buttons
-const quit = document.querySelector(".quit");
-const nextRound = document.querySelector(".next-round");
-const cancel = document.querySelector(".cancel");
-const restart = document.querySelector(".restart");
-const redo = document.querySelector(".first-row3");
+const quitBtn = document.querySelector(".quit");
+const nextRoundBtn = document.querySelector(".next-round");
+const cancelBtn = document.querySelector(".cancel");
+const restartBtn = document.querySelector(".restart");
+const redoBtn = document.querySelector(".first-row3");
 
 // DEFINING VARIABLE FOR THE RESTART RECTANGLE
 const redoRectangle = document.querySelector(".rectangle1");
@@ -72,15 +72,6 @@ let winCombos= [
 ]
 
 
-
-
-
-
-
-
-
-
-
 // FUNCTIONS
 const selectAPlayer = () => {
     alert("PLEASE PICK A MARK!!!")
@@ -94,6 +85,7 @@ const usePlayerXHandler = () => {
     vsCpu.removeEventListener("click", selectAPlayer)
     vsCpu.addEventListener("click", showBoard)  
 }
+
 const usePlayerOHandler = () => {
     usePlayerO.innerHTML = usePlayerOimage;
     usePlayerO.classList.add("use-player");
@@ -106,29 +98,31 @@ const usePlayerOHandler = () => {
 
 const playGame = () => {    
     homePage.style.display ="inline-block";
+    vsCpu.addEventListener("click", selectAPlayer) 
     usePlayerO.addEventListener("click", usePlayerOHandler);
-    usePlayerX.addEventListener("click", usePlayerXHandler);    
+    usePlayerX.addEventListener("click", usePlayerXHandler);
 }
 
 
 const defaultPlayerSelection = () => {
     usePlayerX.innerHTML = usePlayerXinitImg;
     usePlayerX.classList.remove("use-player");
-    usePlayerX.classList.add(".use-first-effects")
-    usePlayerO.innerHTML = usePlayerOinitImg;
-    usePlayerO.classList.remove("use-player");
-    usePlayerO.classList.add(".use-first-effects")    
-}
-
-const removeInitialEffects = () =>{
+    usePlayerX.classList.add("use-first-effects")
     usePlayerO.innerHTML = usePlayerOinitImg;
     usePlayerO.classList.remove("use-player");
     usePlayerO.classList.add("use-first-effects")
-    usePlayerX.innerHTML = usePlayerXinitImg;
-    usePlayerX.classList.remove("use-player");
-    usePlayerX.classList.add("use-first-effects")
+    usePlayerO.removeEventListener("click", usePlayerOHandler);
+    usePlayerX.removeEventListener("click", usePlayerXHandler); 
 }
 
+let displayInitialScores = () => {
+    scoreX = 0;
+    scoreO = 0;
+    scoreT = 0;
+    xScoreNumber.innerText = scoreX;
+    oScoreNumber.innerText =  scoreO;
+    tieScoreNumber.innerText = scoreT;
+}
 
 
 
@@ -142,16 +136,13 @@ const showBoard = () => {
     rectangle.style.display ="none";
     board.style.display="inline-block";
     board.style.position = "absolute";  
-    board.style.opacity = "1";
-    
+    board.style.opacity = "1"; 
+    board.style.zIndex ="1";   
     //setting initial scores to 0
-    scoreX = 0;
-    scoreO = 0;
-    scoreT = 0;
-    xScoreNumber.innerText = scoreX;
-    oScoreNumber.innerText =  scoreO;
-    tieScoreNumber.innerText = scoreT;
+    displayInitialScores()
+    defaultPlayerSelection()
     startGame()    
+    
 }
 
 
@@ -159,16 +150,15 @@ const showBoard = () => {
 
 
 const startGame = () => {   
-    xScoreNumber.innerText = scoreX;
-    oScoreNumber.innerText =  scoreO;
-    tieScoreNumber.innerText = scoreT;
-    playerTurn.innerHTML =  xTurn+ "TURN";
-    renderGame()   
     
+    [xScoreNumber, oScoreNumber, tieScoreNumber].forEach((el, index) => el.innerText = [scoreX, scoreO, scoreT][index]);
+    playerTurn.innerHTML =  xTurn+ "TURN";
+    vsCpu.removeEventListener("click", showBoard)
+    renderGame()      
 }
 
 //Starting the Game for Player vs Player
-const renderGame =() => {   
+const renderGame = () => {   
     origBoard = Array.from(Array(9).keys());    
     for(let i = 0; i < cells.length; i++){
         cells[i].innerHTML = "";
@@ -196,9 +186,8 @@ const turnClick = (square)=> {
 const turn = (squareId, player) => {
     origBoard[squareId] = player;
     document.getElementById(squareId).innerHTML = player;
-    if(player == playerO){
-        playerTurn.innerHTML =  xTurn+ "TURN";
-    }else{playerTurn.innerHTML =  oTurn+ "TURN";}
+    playerTurn.innerHTML = (player == playerO) ? xTurn + "TURN" : oTurn + "TURN";
+
     let gameWon = checkWin(origBoard, player)
     if (gameWon) gameOver(gameWon);
     checkTie();
@@ -255,19 +244,20 @@ const bestSpot = () => {
 }
 
 const declareWinner = (who) => {
-    rectangle.style.display ="block";
-    table.style.zIndex ="-1"
+    rectangle.style.display = "block";
+    table.style.zIndex = "-1";
     takes.innerHTML = who;
-    if (who.includes(aiPlayer)) {
-        takes.style.color = (aiPlayer === playerO) ? "#F2B137" : "#31C3BD";
-        
-    } else if (who.includes("TIE")) {
-        takes.style.color = "#A8BFC9";
-        scoreT++   
-    } else {
-        takes.style.color = (aiPlayer === playerO) ? "#31C3BD" : "#F2B137";  
+    
+    const isAiWinner = who.includes(aiPlayer);
+    const isTie = who.includes("TIE");
+    
+    takes.style.color = isTie ? "#A8BFC9" : (isAiWinner === (aiPlayer === playerO) ? "#F2B137" : "#31C3BD");
+    
+    if (isTie) {
+      scoreT++;
     }
-}
+  };
+  
 
 const declareWinningMessage = (msg) => {
     winnerP.innerHTML = msg;
@@ -275,16 +265,15 @@ const declareWinningMessage = (msg) => {
 
  
 const checkTie = () => {
-    if (emptySquares().length == 0){        
-        for( let i = 0; i < cells.length; i++){
-            cells[i].removeEventListener("click", turnClick, false);            
-        }   
-        declareWinner("ROUND TIED")
-        declareWinningMessage("")        
-        return true;
+    if (emptySquares().length == 0) {        
+      cells.forEach(cell => cell.removeEventListener("click", turnClick, false));   
+      declareWinner("ROUND TIED");
+      declareWinningMessage("");        
+      return true;
     }    
     return false;    
-}
+  };
+  
 
 
 const minimax = (newBoard, player) => {
@@ -371,9 +360,7 @@ let quitGame = () => {
     // removeInitialEffects()
    board.style.display ="none";
    rectangle.style.display ="none";
-   homePage.style.display= "inline-block";    
-   defaultPlayerSelection()
-  
+   playGame()
 }
 
 let cancelRestart = ()=>{
@@ -386,11 +373,10 @@ let cancelRestart = ()=>{
 let restartGame = () => {
     redoRectangle.style.display = "none";
     board.style.opacity = "1";
-    scoreX = 0;
-    scoreO = 0;
-    scoreT = 0;   
-    startGame()
-}
+    [scoreX, scoreO, scoreT] = [0, 0, 0];
+    startGame();
+  };
+  
 
 let nextRoundGame = () => { 
     rectangle.style.display ="none";
@@ -402,34 +388,24 @@ let nextRoundGame = () => {
 let handleReset = () => {
     board.style.position = "absolute"
     board.style.opacity = "0.1";
-    redoRectangle.style.position = "absolute";
-    redoRectangle.style.display = "inline-block";
-    redoRectangle.style.top = "0";
-    redoRectangle.style.left = "0";
-    redoRectangle.style.zIndex = "1";    
-    // redoRectangle.classList.add('.handle-reset')  
+    redoRectangle.style.cssText = "position: absolute; display: inline-block; top: 0; left: 0; z-index: 1;"; 
+    // redoRectangle.classList.add("handle-reset");
     
 }
 
 let displayScores = () => {
-    if(aiPlayer == playerX){       
-        playerXscoreDisplay.innerHTML = "X(CPU)"
-        playerOscoreDisplay.innerHTML = "O(YOU)" 
-    }else{
-        playerXscoreDisplay.innerHTML = "X(YOU)" 
-        playerOscoreDisplay.innerHTML = "O(CPU)"
-    }   }
-     
+    playerXscoreDisplay.innerHTML = aiPlayer === playerX ? "X(CPU)" : "X(YOU)";
+    playerOscoreDisplay.innerHTML = aiPlayer === playerO ? "O(CPU)" : "O(YOU)";
+  };
 
-let updateScore = () => {
-    xScoreNumber.innerText = scoreX;
-    oScoreNumber.innerText =  scoreO;
-    tieScoreNumber.innerText = scoreT;
-}
+  let updateScore = () => {
+    [xScoreNumber.innerText, oScoreNumber.innerText, tieScoreNumber.innerText] = [scoreX, scoreO, scoreT];
+  };
+  
 
 vsCpu.addEventListener("click",selectAPlayer)
-redo.addEventListener("click",handleReset)
-quit.addEventListener("click", quitGame)
-cancel.addEventListener('click', cancelRestart)
-restart.addEventListener("click",restartGame)
-nextRound.addEventListener("click",nextRoundGame)
+redoBtn.addEventListener("click",handleReset)
+quitBtn.addEventListener("click", quitGame)
+cancelBtn.addEventListener('click', cancelRestart)
+restartBtn.addEventListener("click",restartGame)
+nextRoundBtn.addEventListener("click",nextRoundGame)

@@ -103,7 +103,7 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
-    background-color: #1A2A33;
+    background-color: none;
   }
   
 
@@ -129,7 +129,6 @@ body {
 .first-x{
     width:45%;
     height: 80%;
-    color: #A8BFC9;
     cursor: pointer;
     border-radius: 10px;
 }
@@ -139,9 +138,7 @@ body {
 .first-o{
     width:45%;
     height: 80%;
-    border-radius: 10px;
-    color:  #1A2A33;
-   
+    border-radius: 10px;  
     line-height: 1;
     cursor: pointer;
 
@@ -171,7 +168,10 @@ body {
   align-items: center;
   display: none;
 }
-
+.reset-table{
+  position :absolute;
+  opacity : 0.1;
+}
 .cell {
     border: 10px;
     height: 150px;
@@ -422,6 +422,9 @@ body {
   z-index: 1;
 
 }
+.hide{
+  display: none;
+}
 .restart{
   width: 150px;
   height: 50px;
@@ -445,7 +448,12 @@ body {
   opacity: 0.5;
   cursor: not-allowed;
 }
-
+/* ADDED CSS CLASSES USING JAVASCRIPT */
+.board-visible {
+  display: inline-block;
+  position: absolute;
+  opacity: 1;
+}
 
 @media (max-width: 1100px){
   
