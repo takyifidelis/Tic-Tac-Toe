@@ -984,3 +984,56 @@ function minimax(board, depth, isMaximizingPlayer) {
     }
     
 }
+
+
+___________________________________________________
+
+@media (max-width: 1100px){
+  
+  .rectangle{
+    height: 25vh;
+  }
+}
+
+@media (max-width: 700px){
+  #homePage {
+    width: 20rem;
+  }
+  .player-xo{
+    position: relative;
+  }
+  
+  .group-4{
+    width: 40%;
+   }
+   .group-4-copy{
+    width: 0%;
+   }
+  .cell{
+    width: 96px;
+    height: 96px;
+  }
+  .takes{
+    font-size: 1.8rem;
+  }
+  #x-img{
+    width: 40px;
+   
+  }
+  #o-img{
+    width: 40px;
+   
+  }
+  .rectangle{
+    height: 30vh;
+  }
+
+  @media (max-width: 400px){
+    .rectangle{
+      height: 35vh;
+    }
+    .takes{
+      font-size: 1.7rem;
+    }
+  }
+}

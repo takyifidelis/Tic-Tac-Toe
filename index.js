@@ -1,3 +1,6 @@
+
+
+
 //DISPLAYING THE HOMEPAGE
 const homePage = document.getElementById("homePage"); //HOMEPAGE
 const board = document.getElementById("table");       //BOARD
@@ -361,6 +364,9 @@ let quitGame = () => {
    board.style.display ="none";
    rectangle.style.display ="none";
    playGame()
+    
+   
+
 }
 
 let cancelRestart = ()=>{
@@ -383,6 +389,7 @@ let nextRoundGame = () => {
     table.style.zIndex ="1"
     updateScore()
     startGame()
+    
 }
 //HANDLE RESET FUNCTION
 let handleReset = () => {
@@ -409,3 +416,17 @@ quitBtn.addEventListener("click", quitGame)
 cancelBtn.addEventListener('click', cancelRestart)
 restartBtn.addEventListener("click",restartGame)
 nextRoundBtn.addEventListener("click",nextRoundGame)
+
+window.addEventListener('load',()=>{
+
+    const name= document.querySelector('.score-o-num');
+    const username = localStorage.getItem('username') || 0;
+    console.log(name)
+  
+    name.value = username;
+  
+    xScoreNumber.innerText.addEventListener('change', (e)=>{
+      localStorage.setItem('username', e.target.value);
+    })
+  
+  })
