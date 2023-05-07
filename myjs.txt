@@ -1,3 +1,4 @@
+
 //DISPLAYING THE HOMEPAGE
 const homePage = document.getElementById("homePage"); //HOMEPAGE
 const board = document.getElementById("table");       //BOARD
@@ -66,7 +67,7 @@ let huPlayer;
 // players for multiPlayer game
 let player1;
 let player2;
-let currentPlayer = playerX
+let currentPlayer = playerX;
 //PLAYER'S TURN DISPLAY VARIABLES
 const xTurn = "<img src='./assets/xturn.svg' id='xturn'>";
 const oTurn = "<img src='./assets/oturn.svg' id='oturn'>";
@@ -113,10 +114,9 @@ const usePlayerOHandler = () => {
     player1 = playerO
     player2 = playerX;
     usePlayerX.removeEventListener("click", usePlayerXHandler);
-
     vsCpu.removeEventListener("click", selectAPlayer)
-    vsPlayer.removeEventListener("click", selectAPlayer) 
     vsCpu.addEventListener("click", showBoard)
+    vsPlayer.removeEventListener("click", selectAPlayer)  
     vsPlayer.addEventListener("click", showBoardVsPlayer)
 }
 
@@ -124,7 +124,6 @@ const playGame = () => {
     homePage.style.display ="inline-block";
     board.style.display = "none";
     vsCpu.addEventListener("click", selectAPlayer) 
-    vsPlayer.addEventListener("click", selectAPlayer) 
     usePlayerO.addEventListener("click", usePlayerOHandler);
     usePlayerX.addEventListener("click", usePlayerXHandler);
 }
@@ -172,10 +171,28 @@ const showBoard = () => {
     board.style.zIndex ="1";   
     //setting initial scores to 0
     // displayInitialScores()
-    playVsCpuListeners()
+    
     startGame()  
     
 }
+const showBoardVsPlayer = () => {   
+    displayScores()
+    homePage.style.display="none";
+    redoRectangle.style.display = "none";
+    rectangle.style.display ="none";
+    board.style.display="inline-block";
+    localStorage.setItem("board","true")
+
+    board.style.position = "absolute";  
+    board.style.opacity = "1"; 
+    board.style.zIndex ="1";   
+    //setting initial scores to 0
+    // displayInitialScores()
+    
+    startGameVsPlayer()   
+    
+}
+
 
 
 //DISPLAYING THE HOME PAGE
@@ -222,7 +239,7 @@ const turn = (squareId, player) => {
 
     let gameWon = checkWin(origBoard, player)
     if (gameWon) gameOver(gameWon);
-    
+    checkTie();
 }
 
 const checkWin = (board, player) => {
@@ -234,8 +251,7 @@ const checkWin = (board, player) => {
 			gameWon = {index: index, player: player};
 			break;
 		}
-	} 
-    checkTie();  
+	}    
 	return gameWon;
 }
 
@@ -440,6 +456,17 @@ let displayScores = () => {
   let updateScore = () => {
     [xScoreNumber.innerText, oScoreNumber.innerText, tieScoreNumber.innerText] = [scoreX, scoreO, scoreT];
   };
+
+  
+  
+
+vsCpu.addEventListener("click",selectAPlayer)
+vsPlayer.addEventListener("click", selectAPlayer)
+redoBtn.addEventListener("click",handleReset)
+quitBtn.addEventListener("click", quitGame)
+cancelBtn.addEventListener('click', cancelRestart)
+restartBtn.addEventListener("click",restartGame)
+nextRoundBtn.addEventListener("click",nextRoundGame)
 playGame()
 
 // window.onload = function(){
@@ -449,110 +476,31 @@ playGame()
 
 // }
 
-
-let playVsCpuListeners = () => {
-    vsCpu.addEventListener("click",selectAPlayer)
-    vsPlayer.addEventListener("click", selectAPlayer)
-    // ADDING EVENT LISTENERS FOR VS-CPU
-    redoBtn.addEventListener("click",handleReset)
-    quitBtn.addEventListener("click", quitGame)
-    cancelBtn.addEventListener('click', cancelRestart)
-    restartBtn.addEventListener("click",restartGame)
-    nextRoundBtn.addEventListener("click",nextRoundGame)
-
-    //REMOVING EVENT LISTENERS OF MULTIPLAYER
-    redoBtn.removeEventListener("click",handleResetVsPlayer)
-    quitBtn.removeEventListener("click", quitGameVsPlayer)
-    cancelBtn.removeEventListener('click', cancelRestartVsPlayer)
-    restartBtn.removeEventListener("click",restartGameVsPlayer)
-    nextRoundBtn.removeEventListener("click",nextRoundGameVsPlayer)
-}
-let playVsPlayerListeners = () => {
-    vsCpu.addEventListener("click",selectAPlayer)
-    vsPlayer.removeEventListener("click", selectAPlayer)
-    // REMOVING EVENT LISTENERS OF vsCPU
-    redoBtn.removeEventListener("click",handleReset)
-    quitBtn.removeEventListener("click", quitGame)
-    cancelBtn.removeEventListener('click', cancelRestart)
-    restartBtn.removeEventListener("click",restartGame)
-    nextRoundBtn.removeEventListener("click",nextRoundGame)
-
-    // ADDING EVENTLISTENERS FOR MULTIPLAYER
-    redoBtn.addEventListener("click",handleResetVsPlayer)
-    quitBtn.addEventListener("click", quitGameVsPlayer)
-    cancelBtn.addEventListener('click', cancelRestartVsPlayer)
-    restartBtn.addEventListener("click",restartGameVsPlayer)
-    nextRoundBtn.addEventListener("click",nextRoundGameVsPlayer)
-}
-
-// ************************************************************************************************************************
-// ************************************************************************************************************************
-// ************************************************************************************************************************
-// ************************************************************************************************************************
-// ************************************************************************************************************************
-// ***********************************CODE FOR MULTIPLAYER****************************************
-// ************************************************************************************************************************
-// ************************************************************************************************************************
-// ************************************************************************************************************************
-// ************************************************************************************************************************
-// ************************************************************************************************************************
-// ************************************************************************************************************************
-
-
-
-const showBoardVsPlayer = () => {   
-    displayScoresVsPlayer()
-    homePage.style.display="none";
-    redoRectangle.style.display = "none";
-    rectangle.style.display ="none";
-    board.style.display="inline-block";
-    localStorage.setItem("board","true")
-
-    board.style.position = "absolute";  
-    board.style.opacity = "1"; 
-    board.style.zIndex ="1";   
-    //setting initial scores to 0
-    // displayInitialScores()
-    playVsPlayerListeners()
-    startGameVsPlayer()   
-    
-}
-
-
-
-//DISPLAYING THE HOME PAGE
-
-
 const startGameVsPlayer = () => {   
    
     [xScoreNumber, oScoreNumber, tieScoreNumber].forEach((el, index) => el.innerText = [scoreX, scoreO, scoreT][index]);
     playerTurn.innerHTML =  xTurn+ "TURN";
-    vsCpu.removeEventListener("click", showBoardVsPlayer)
+    vsPlayer.removeEventListener("click", showBoard)
     renderGameVsPlayer()      
 }
 
-//Starting the Game for Player vs Player
-
 const renderGameVsPlayer = () => {   
-    origBoard = Array.from(Array(9).keys()); 
-    currentPlayer = playerX;   
+    origBoard = Array.from(Array(9).keys());    
     for(let i = 0; i < cells.length; i++){
         cells[i].innerHTML = "";
         cells[i].style.removeProperty("background-color");
         
         // cells[i].removeEventListener('click', turnClick, false); // remove this line
-       
-        cells[i].addEventListener('click', turnClickVsPlayer , false);
-       
+        
+        cells[i].addEventListener('click', function() {
+            if(cells[i].innerHTML != "") return;
+            turnVsPlayer(cells[i].id, currentPlayer);
+            currentPlayer = currentPlayer == playerX ? playerO : playerX;
+        }, false);
     }
 }
 
 
-let turnClickVsPlayer = (event) => {
-    if(event.target.innerHTML !== "") return; // if the cell is not empty, do nothing
-    turnVsPlayer(event.target.id, currentPlayer); // perform the turn for the clicked cell
-    currentPlayer = currentPlayer === playerX ? playerO : playerX; // switch players
-};
 
 
 
@@ -562,12 +510,13 @@ const turnVsPlayer = (squareId, player) => {
     document.getElementById(squareId).innerHTML = player;
     playerTurn.innerHTML = (player == playerO) ? xTurn + "TURN" : oTurn + "TURN";
 
-    let gameWon = checkWinVsPlayer(origBoard, player)
-    if (gameWon) gameOverVsPlayer(gameWon);
-    
+    let gameWon = checkWin(origBoard, player)
+    if (gameWon) gameOver(gameWon);
+    checkTieVsPlayer();
 }
 
-const checkWinVsPlayer = (board, player) => {
+
+const checkWinVsplayer = (board, player) => {
 	let plays = board.reduce((a, e, i) =>
 		(e === player) ? a.concat(i) : a, []);
 	let gameWon = null;
@@ -576,8 +525,7 @@ const checkWinVsPlayer = (board, player) => {
 			gameWon = {index: index, player: player};
 			break;
 		}
-	}
-    checkTieVsPlayer();
+	}    
 	return gameWon;
 }
 
@@ -585,11 +533,13 @@ const checkWinVsPlayer = (board, player) => {
 const gameOverVsPlayer = (gameWon) => {
 	for (let index of winCombos[gameWon.index]) {
         const element = document.getElementById(index);
-        const player = gameWon.player;
-        const isPlayer1O = player1 === playerO;
-        element.style.backgroundColor = isPlayer1O === (player === player1) ? "#F2B137" : "#31C3BD";
-        element.innerHTML = isPlayer1O === (player === player1) ? playerOO : playerXX;
-        
+        if (gameWon.player === player1) {
+          element.style.backgroundColor = (player1 === playerO) ? "#F2B137" : "#31C3BD";
+          element.innerHTML = (player1 === playerO) ? playerOO : playerXX;
+        } else {
+          element.style.backgroundColor = (player1 === playerX) ? "#F2B137" : "#31C3BD";
+          element.innerHTML = (player1 === playerX) ? playerXX : playerOO;
+        }
       }
     // update scores
     if (gameWon.player == playerO) {
@@ -601,36 +551,22 @@ const gameOverVsPlayer = (gameWon) => {
     }
 
 	for (var i = 0; i < cells.length; i++) {
-		cells[i].removeEventListener('click', turnVsPlayer, false);
+		cells[i].removeEventListener('click', turnClick, false);
 	}
-    declareWinnerVsPlayer(gameWon.player == playerO ? playerO + " TAKES THE ROUND" : playerX + " TAKES THE ROUND");
-
+    declareWinnerVsPlayer(gameOver.player == player1 ? player1+"TAKES THE ROUND" : player2+ "TAKES THE ROUND")
 	//HANDLE WIN
-    declareWinningMessageVsPlayer(gameWon.player == player1 && (player1 == playerX || player1 == playerO) ? "PLAYER 1 WINS" : "PLAYER 2 WINS");
-
+    declareWinningMessageVsPlayer(gameOver.player == player1 ? "PLAYER 1 WINS!" : "PLAYER 2 WINS!")
 }
 
-let emptySquaresVsPlayer = () => {
-    return origBoard.filter(s => typeof s == "number");
-}
-
-
-
-const declareWinnerVsPlayer = (who) => {
+ const declareWinnerVsPlayer = (who) => {
     rectangle.style.display = "block";
     table.style.zIndex = "-1";
     takes.innerHTML = who;
     
-    const isWinner = who.includes(playerX);
+    const isAiWinner = who.includes(aiPlayer);
     const isTie = who.includes("TIE");
     
-    if (isTie) {
-      takes.style.color = "#A8BFC9"; // gray color for tie
-    } else {
-      takes.style.color = isWinner ? "#31C3BD" : "#F2B137";
-      // green color for playerX, yellow color for playerO
-    }
-    
+    takes.style.color = isTie ? "#A8BFC9" : (isAiWinner === (player1 === playerO) ? "#F2B137" : "#31C3BD");
     
     if (isTie) {
       scoreT++;
@@ -642,75 +578,12 @@ const declareWinningMessageVsPlayer = (msg) => {
     winnerP.innerHTML = msg;
 }
 
- 
 const checkTieVsPlayer = () => {
-    if (emptySquaresVsPlayer().length == 0) { 
-       
-    console.log("BABYGIRL")      
-      cells.forEach(cell => cell.removeEventListener("click", turnClickVsPlayer, false));
-       
-      declareWinnerVsPlayer("ROUND TIED");
-      declareWinningMessageVsPlayer("");        
+    if (emptySquares().length == 0) {        
+      cells.forEach(cell => cell.removeEventListener("click", turnClick, false));   
+      declareWinner("ROUND TIED");
+      declareWinningMessage("");        
       return true;
     }    
     return false;    
   };
-  
-
-
-
-
-
-
-//QUIT GAME FUNCTION
-let quitGameVsPlayer = () => {
-    // removeInitialEffects()
-   board.style.display ="none";
-   rectangle.style.display ="none";
-   [scoreX, scoreO, scoreT] = [0, 0, 0];
-   defaultPlayerSelection()
-   playGame() 
-}
-
-let cancelRestartVsPlayer = ()=>{
-    board.style.position = "inline-block"
-    board.style.opacity = "1";    
-    redoRectangle.style.display = "none";        
-}
-
-//RESTART GAME
-let restartGameVsPlayer = () => {
-    redoRectangle.style.display = "none";
-    board.style.opacity = "1";
-    [scoreX, scoreO, scoreT] = [0, 0, 0];
-    startGameVsPlayer();
-  };
-  
-
-let nextRoundGameVsPlayer = () => { 
-    setLocalStorage("scores",[scoreX, scoreT, scoreO])
-    rectangle.style.display ="none";
-    table.style.zIndex ="1"
-    updateScoreVsPlayer()
-    startGameVsPlayer()
-    
-}
-//HANDLE RESET FUNCTION
-let handleResetVsPlayer = () => {
-    board.style.position = "absolute"
-    board.style.opacity = "0.1";
-    redoRectangle.style.cssText = "position: absolute; display: inline-block; top: 0; left: 0; z-index: 1;"; 
-    // redoRectangle.classList.add("handle-reset");
-    
-}
-
-let displayScoresVsPlayer = () => {
-    playerXscoreDisplay.innerHTML = player1 === playerX ? "X(P1)" : "X(P2)";
-    playerOscoreDisplay.innerHTML = player1 === playerO ? "O(P1)" : "O(P2)";
-  };
-
-  let updateScoreVsPlayer = () => {
-    [xScoreNumber.innerText, oScoreNumber.innerText, tieScoreNumber.innerText] = [scoreX, scoreO, scoreT];
-  }
-
-  
