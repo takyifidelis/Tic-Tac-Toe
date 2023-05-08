@@ -145,10 +145,7 @@ let displayInitialScores = () => {
     // scoreX = 0;
     // scoreO = 0;
     // scoreT = 0; 
-    const [scoreX, scoreT, scoreO] = getLocalStorage("scores")
-   
-   
-   console.log(scoreX, scoreT, scoreO, "after")
+    let [scoreX, scoreT, scoreO] = getLocalStorage("scores")
     xScoreNumber.innerText = scoreX;
     oScoreNumber.innerText =  scoreO;
     tieScoreNumber.innerText = scoreT;
@@ -186,32 +183,52 @@ const startGame = () => {
     [xScoreNumber, oScoreNumber, tieScoreNumber].forEach((el, index) => el.innerText = [scoreX, scoreO, scoreT][index]);
     playerTurn.innerHTML =  xTurn+ "TURN";
     vsCpu.removeEventListener("click", showBoard)
+    
     renderGame()      
 }
-
+let firstPlayer = playerX; 
 //Starting the Game for Player vs Player
-const renderGame = () => {   
+const renderGame = () => {  
+    if(firstPlayer == playerO){
+        playerTurn.innerHTML = oTurn + "TURN"
+     }else{
+        playerTurn.innerHTML = xTurn + "TURN"
+     }
+    
     origBoard = Array.from(Array(9).keys());    
     for(let i = 0; i < cells.length; i++){
         cells[i].innerHTML = "";
         cells[i].style.removeProperty("background-color");        
         cells[i].addEventListener('click', turnClick, false);
  } 
- if (aiPlayer == playerX) {
+ if (aiPlayer == playerX && aiPlayer == firstPlayer) {
    setTimeout(() => {
     
     turn(bestSpot(),aiPlayer)
-    
-   },"500" ) ;
+    unClickableCells()
+   },"300" ) ;
+   clickableCells();
   }
+  else if (aiPlayer == playerO && aiPlayer == firstPlayer) {
+    setTimeout(() => {
+     
+     turn(bestSpot(),aiPlayer)
+     unClickableCells()
+    },"300" ) ;
+    clickableCells();
+   }
 }
   
 const turnClick = (square)=> {
 	if (typeof origBoard[square.target.id] == 'number') {
 		turn(square.target.id, huPlayer)
 		if (!checkWin(origBoard, huPlayer) && !checkTie()) 
-        setTimeout(() => {turn(bestSpot(), aiPlayer)},"300") ;
+        setTimeout(() => {turn(bestSpot(), aiPlayer)
+        unClickableCells()
+        },"300") ;
+        clickableCells();
 	}
+    
     hover()
 }
 
@@ -222,7 +239,9 @@ const turn = (squareId, player) => {
 
     let gameWon = checkWin(origBoard, player)
     if (gameWon) gameOver(gameWon);
-    
+    checkTie(); 
+     firstPlayer = firstPlayer === playerX ? playerO : playerX;
+     
 }
 
 const checkWin = (board, player) => {
@@ -235,7 +254,7 @@ const checkWin = (board, player) => {
 			break;
 		}
 	} 
-    checkTie();  
+    
 	return gameWon;
 }
 
@@ -280,14 +299,12 @@ const declareWinner = (who) => {
     rectangle.style.display = "block";
     table.style.zIndex = "-1";
     takes.innerHTML = who;
-    
     const isAiWinner = who.includes(aiPlayer);
     const isTie = who.includes("TIE");
-    
     takes.style.color = isTie ? "#A8BFC9" : (isAiWinner === (aiPlayer === playerO) ? "#F2B137" : "#31C3BD");
     
     if (isTie) {
-      scoreT++;
+    //   scoreT++;
     }
   };
   
@@ -296,19 +313,18 @@ const declareWinningMessage = (msg) => {
     winnerP.innerHTML = msg;
 }
 
- 
 const checkTie = () => {
     if (emptySquares().length == 0) {        
       cells.forEach(cell => cell.removeEventListener("click", turnClick, false));   
       declareWinner("ROUND TIED");
-      declareWinningMessage("");        
+      declareWinningMessage("");  
+      scoreT++    
       return true;
+      
     }    
     return false;    
   };
   
-
-
 const minimax = (newBoard, player) => {
 	var availSpots = emptySquares();
 
@@ -360,8 +376,7 @@ const minimax = (newBoard, player) => {
 	return moves[bestMove];
 }
 
-
-let hover = () => {
+const hover = () => {
     // Loop through cells
   for (let i = 0; i < cells.length; i++) {
       cells[i].addEventListener('mouseenter', function() {
@@ -388,6 +403,16 @@ let hover = () => {
   }
 }
 
+const unClickableCells = () =>{
+    for (let i = 0; i < cells.length; i++) {
+        cells[i].addEventListener('click', turnClick, false);
+    }
+}
+const clickableCells = () =>{
+    for (let i = 0; i < cells.length; i++) {
+        cells[i].removeEventListener('click', turnClick, false);
+    }
+}
 //QUIT GAME FUNCTION
 let quitGame = () => {
     // removeInitialEffects()
@@ -528,22 +553,19 @@ const startGameVsPlayer = () => {
     [xScoreNumber, oScoreNumber, tieScoreNumber].forEach((el, index) => el.innerText = [scoreX, scoreO, scoreT][index]);
     playerTurn.innerHTML =  xTurn+ "TURN";
     vsCpu.removeEventListener("click", showBoardVsPlayer)
+    
     renderGameVsPlayer()      
 }
 
 //Starting the Game for Player vs Player
 
-const renderGameVsPlayer = () => {   
-    origBoard = Array.from(Array(9).keys()); 
-    currentPlayer = playerX;   
+const renderGameVsPlayer = () => {
+     
+    origBoard = Array.from(Array(9).keys());  
     for(let i = 0; i < cells.length; i++){
         cells[i].innerHTML = "";
         cells[i].style.removeProperty("background-color");
-        
-        // cells[i].removeEventListener('click', turnClick, false); // remove this line
-       
-        cells[i].addEventListener('click', turnClickVsPlayer , false);
-       
+        cells[i].addEventListener('click', turnClickVsPlayer , false); 
     }
 }
 
@@ -631,10 +653,6 @@ const declareWinnerVsPlayer = (who) => {
       // green color for playerX, yellow color for playerO
     }
     
-    
-    if (isTie) {
-      scoreT++;
-    }
   };
   
 
@@ -644,15 +662,14 @@ const declareWinningMessageVsPlayer = (msg) => {
 
  
 const checkTieVsPlayer = () => {
-    if (emptySquaresVsPlayer().length == 0) { 
-       
-    console.log("BABYGIRL")      
+    if (emptySquaresVsPlayer().length == 0) {       
       cells.forEach(cell => cell.removeEventListener("click", turnClickVsPlayer, false));
-       
       declareWinnerVsPlayer("ROUND TIED");
-      declareWinningMessageVsPlayer("");        
+      declareWinningMessageVsPlayer("");
+      scoreT++        
       return true;
-    }    
+    } 
+    
     return false;    
   };
   
@@ -667,6 +684,7 @@ let quitGameVsPlayer = () => {
     // removeInitialEffects()
    board.style.display ="none";
    rectangle.style.display ="none";
+   firstPlayer = playerX; 
    [scoreX, scoreO, scoreT] = [0, 0, 0];
    defaultPlayerSelection()
    playGame() 
