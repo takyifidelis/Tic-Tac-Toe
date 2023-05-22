@@ -303,8 +303,8 @@ const declareWinner = (who) => {
     const isTie = who.includes("TIE");
     takes.style.color = isTie ? "#A8BFC9" : (isAiWinner === (aiPlayer === playerO) ? "#F2B137" : "#31C3BD");
     
-    if (isTie) {
-    //   scoreT++;
+    if (who == "ROUND TIED") {
+         scoreT++;
     }
   };
   
@@ -318,10 +318,11 @@ const checkTie = () => {
       cells.forEach(cell => cell.removeEventListener("click", turnClick, false));   
       declareWinner("ROUND TIED");
       declareWinningMessage("");  
-      scoreT++    
+        
       return true;
       
-    }    
+    } 
+        
     return false;    
   };
   

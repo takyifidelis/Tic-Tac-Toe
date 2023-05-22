@@ -278,7 +278,7 @@ body {
 /* CSS FOR THE RECTANGLE */
 .rectangle{
   width: 100%;
-  height: 40vh;
+  height: 17rem;
   background-color: #1F3641;
   margin-top: 30vh;
   display: none;
@@ -366,7 +366,7 @@ body {
 /* RESTART RECTANGLE */
 .rectangle1{
   width: 100%;
-  height: 30vh;
+  height: 17rem;
   background-color: #1F3641;
   
   margin-top: 30vh;
