@@ -274,10 +274,10 @@ const gameOver = (gameWon) => {
     if (gameWon.player == playerO) {
         scoreO++;
     } else if (gameWon.player == playerX) {
-        scoreX++;
-    } else{
-        // scoreT++;
-    }
+        scoreX++;}
+    //  else if(gameWon.player !== playerX && gameWon.player !== playerO){
+    //     scoreT++;
+    // }
 
 	for (var i = 0; i < cells.length; i++) {
 		cells[i].removeEventListener('click', turnClick, false);
@@ -303,14 +303,16 @@ const declareWinner = (who) => {
     const isTie = who.includes("TIE");
     takes.style.color = isTie ? "#A8BFC9" : (isAiWinner === (aiPlayer === playerO) ? "#F2B137" : "#31C3BD");
     
-    if (who == "ROUND TIED") {
-         scoreT++;
-    }
+    
   };
   
 
 const declareWinningMessage = (msg) => {
     winnerP.innerHTML = msg;
+    if(msg === ""){
+        scoreT++;
+    }
+    
 }
 
 const checkTie = () => {
@@ -322,7 +324,7 @@ const checkTie = () => {
       return true;
       
     } 
-        
+    
     return false;    
   };
   
@@ -437,6 +439,7 @@ let restartGame = () => {
     redoRectangle.style.display = "none";
     board.style.opacity = "1";
     [scoreX, scoreO, scoreT] = [0, 0, 0];
+    firstPlayer = playerX;
     startGame();
   };
   
@@ -553,6 +556,7 @@ const startGameVsPlayer = () => {
    
     [xScoreNumber, oScoreNumber, tieScoreNumber].forEach((el, index) => el.innerText = [scoreX, scoreO, scoreT][index]);
     playerTurn.innerHTML =  xTurn+ "TURN";
+    currentPlayer = playerX;
     vsCpu.removeEventListener("click", showBoardVsPlayer)
     
     renderGameVsPlayer()      
@@ -561,7 +565,12 @@ const startGameVsPlayer = () => {
 //Starting the Game for Player vs Player
 
 const renderGameVsPlayer = () => {
-     
+    if(firstPlayer == playerO){
+        playerTurn.innerHTML = oTurn + "TURN"
+     }else{
+        playerTurn.innerHTML = xTurn + "TURN"
+     }
+    
     origBoard = Array.from(Array(9).keys());  
     for(let i = 0; i < cells.length; i++){
         cells[i].innerHTML = "";
@@ -601,6 +610,7 @@ const checkWinVsPlayer = (board, player) => {
 		}
 	}
     checkTieVsPlayer();
+    firstPlayer = firstPlayer === playerX ? playerO : playerX;
 	return gameWon;
 }
 
@@ -702,6 +712,7 @@ let restartGameVsPlayer = () => {
     redoRectangle.style.display = "none";
     board.style.opacity = "1";
     [scoreX, scoreO, scoreT] = [0, 0, 0];
+    firstPlayer = playerX;
     startGameVsPlayer();
   };
   
