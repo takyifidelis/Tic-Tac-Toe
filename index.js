@@ -22,7 +22,7 @@ let playerX = "<img src='./assets/icon-x.svg' id='x-img'> ";
 let playerO = "<img src='./assets/icon-o.svg' id='o-img'>";
 let playerXwin = "<img src='./assets/icon-x-outline.svg' id='xwin-img'> ";
 let playerOwin = "<img src='./assets/icon-o-outline.svg' id='owin-img'>";
-let playerXX = "<img src='./assets/icon-x-outline1.svg' id='owin1-img'>";
+let playerXX = "<img src='./assets/icon-x-outline1.svg' id='xwin1-img'>";
 let playerOO = "<img src='./assets/icon-o-outline1.svg' id='owin1-img'>";
 //Variables for the Scores
 const playerXscoreDisplay = document.querySelector(".score-x");
@@ -240,7 +240,7 @@ const turn = (squareId, player) => {
     let gameWon = checkWin(origBoard, player)
     if (gameWon) gameOver(gameWon);
     checkTie(); 
-     firstPlayer = firstPlayer === playerX ? playerO : playerX;
+     
      
 }
 
@@ -278,6 +278,7 @@ const gameOver = (gameWon) => {
     //  else if(gameWon.player !== playerX && gameWon.player !== playerO){
     //     scoreT++;
     // }
+    
 
 	for (var i = 0; i < cells.length; i++) {
 		cells[i].removeEventListener('click', turnClick, false);
@@ -447,9 +448,11 @@ let restartGame = () => {
 let nextRoundGame = () => { 
     setLocalStorage("scores",[scoreX, scoreT, scoreO])
     rectangle.style.display ="none";
-    table.style.zIndex ="1"
+    table.style.zIndex ="1";
+    firstPlayer = firstPlayer === playerX ? playerO : playerX;
     updateScore()
     startGame()
+   
     
 }
 //HANDLE RESET FUNCTION
@@ -556,7 +559,7 @@ const startGameVsPlayer = () => {
    
     [xScoreNumber, oScoreNumber, tieScoreNumber].forEach((el, index) => el.innerText = [scoreX, scoreO, scoreT][index]);
     playerTurn.innerHTML =  xTurn+ "TURN";
-    currentPlayer = playerX;
+    
     vsCpu.removeEventListener("click", showBoardVsPlayer)
     
     renderGameVsPlayer()      
