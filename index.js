@@ -25,6 +25,8 @@ let playerOwin = "<img src='./assets/icon-o-outline.svg' id='owin-img'>";
 let playerXX = "<img src='./assets/icon-x-outline1.svg' id='xwin1-img'>";
 let playerOO = "<img src='./assets/icon-o-outline1.svg' id='owin1-img'>";
 //Variables for the Scores
+
+console.log(playerX)
 const playerXscoreDisplay = document.querySelector(".score-x");
 const playerOscoreDisplay = document.querySelector(".score-o");
 const xScoreNumber = document.querySelector(".score-x-num");
