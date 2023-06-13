@@ -444,7 +444,7 @@ let restartGame = () => {
     startGame();
   };
   
-
+// What 
 let nextRoundGame = () => { 
     setLocalStorage("scores",[scoreX, scoreT, scoreO])
     rectangle.style.display ="none";
