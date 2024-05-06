@@ -20,5 +20,5 @@ Your users should be able to:
 
 ### Links
 
-- Solution URL: [Tic-Tac-Toe](https://bmi-calculator-fidelis.netlify.app/)
-- GitHub Repo: [Link to the GitHub Repo](https://github.com/fidelismensah/BMI-Calculator)
+- Solution URL: [Tic-Tac-Toe](https://phase2-tictactoe-fidelis.netlify.app/)
+- GitHub Repo: [Link to the GitHub Repo](https://github.com/takyifidelis/Tic-Tac-Toe)
